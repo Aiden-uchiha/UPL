@@ -1,0 +1,175 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // UPL admin identity.
+    // The email below matches ADMIN_EMAILS in the current UPL index.html.
+    // The optional custom claim is only trusted if it is assigned by a trusted
+    // server using the Firebase Admin SDK.
+    function isLeagueAdmin() {
+      return request.auth != null && (
+        request.auth.token.get('email', '') == 'narekko26@gmail.com' ||
+        request.auth.token.get('admin', false) == true
+      );
+    }
+
+    // UPL uses Firebase anonymous authentication for public Hype voting.
+    function isHypeVoter() {
+      return request.auth != null && (
+        request.auth.token.firebase.sign_in_provider == 'anonymous' ||
+        isLeagueAdmin()
+      );
+    }
+
+    function leagueStatePath() {
+      return /databases/$(database)/documents/league_state/main;
+    }
+
+    function hypeCounterPath(cycleId, playerId) {
+      return /databases/$(database)/documents/hype_counts/$(cycleId + '__' + playerId);
+    }
+
+    function hypeVotePath(cycleId, playerId, voterUid) {
+      return /databases/$(database)/documents/hype_votes/$(cycleId)/players/$(playerId)/voters/$(voterUid);
+    }
+
+    // UPL stores the cycle ID inside the "state" map of league_state/main.
+    function isCurrentHypeCycle(cycleId) {
+      return exists(leagueStatePath()) &&
+        get(leagueStatePath()).data.state.hypeCycleId == cycleId;
+    }
+
+    // The app writes a vote and its matching counter increment in one transaction.
+    // The current UPL JavaScript uses Date.now() (integer milliseconds), not
+    // Firestore serverTimestamp(), so these checks validate integer values.
+    function matchingVoteExistsAfter(cycleId, playerId) {
+      let votePath = hypeVotePath(cycleId, playerId, request.auth.uid);
+      let voteAfter = getAfter(votePath);
+
+      return !exists(votePath) &&
+        existsAfter(votePath) &&
+        voteAfter.data.uid == request.auth.uid &&
+        voteAfter.data.cycleId == cycleId &&
+        voteAfter.data.playerId == playerId &&
+        voteAfter.data.createdAt is int;
+    }
+
+    function matchingCounterIncrementedAfter(cycleId, playerId) {
+      let counterPath = hypeCounterPath(cycleId, playerId);
+      let counterAfter = getAfter(counterPath);
+
+      return existsAfter(counterPath) &&
+        counterAfter.data.cycleId == cycleId &&
+        counterAfter.data.playerId == playerId &&
+        counterAfter.data.updatedAt is int &&
+        counterAfter.data.count is int &&
+        (
+          (!exists(counterPath) && counterAfter.data.count == 1) ||
+          (
+            exists(counterPath) &&
+            get(counterPath).data.count is int &&
+            counterAfter.data.count == get(counterPath).data.count + 1
+          )
+        );
+    }
+
+    // Main UPL league document:
+    // readers can view it; only the authorized administrator can create/edit it.
+    match /league_state/main {
+      allow read: if true;
+      allow create, update: if isLeagueAdmin();
+      allow delete: if false;
+    }
+
+    // UPL stores admin activity in one document: admin_data/logs.
+    match /admin_data/logs {
+      allow read, create, update: if isLeagueAdmin();
+      allow delete: if false;
+    }
+
+    // Hype votes are stored as nested documents:
+    // hype_votes/{cycleId}/players/{playerId}/voters/{uid}
+    match /hype_votes/{cycleId}/players/{playerId}/voters/{voterUid} {
+      // A voter can check only their own vote to display "Already Hyped".
+      allow get: if request.auth != null &&
+        request.auth.uid == voterUid;
+      allow list: if false;
+
+      allow create: if isHypeVoter() &&
+        voterUid == request.auth.uid &&
+        request.resource.data.keys().hasAll([
+          'uid', 'cycleId', 'playerId', 'createdAt'
+        ]) &&
+        request.resource.data.keys().hasOnly([
+          'uid', 'cycleId', 'playerId', 'createdAt'
+        ]) &&
+        request.resource.data.uid == request.auth.uid &&
+        request.resource.data.cycleId == cycleId &&
+        request.resource.data.playerId == playerId &&
+        request.resource.data.createdAt is int &&
+        isCurrentHypeCycle(cycleId) &&
+        matchingCounterIncrementedAfter(cycleId, playerId);
+
+      allow update, delete: if false;
+    }
+
+    // Public Hype counters:
+    // document ID = {cycleId}__{playerId}
+    match /hype_counts/{counterId} {
+      allow read: if true;
+
+      allow create: if isHypeVoter() &&
+        request.resource.data.keys().hasAll([
+          'cycleId', 'playerId', 'count', 'updatedAt'
+        ]) &&
+        request.resource.data.keys().hasOnly([
+          'cycleId', 'playerId', 'count', 'updatedAt'
+        ]) &&
+        request.resource.data.cycleId is string &&
+        request.resource.data.playerId is string &&
+        counterId ==
+          request.resource.data.cycleId + '__' +
+          request.resource.data.playerId &&
+        request.resource.data.count is int &&
+        request.resource.data.count == 1 &&
+        request.resource.data.updatedAt is int &&
+        isCurrentHypeCycle(request.resource.data.cycleId) &&
+        matchingVoteExistsAfter(
+          request.resource.data.cycleId,
+          request.resource.data.playerId
+        );
+
+      allow update: if isHypeVoter() &&
+        request.resource.data.keys().hasAll([
+          'cycleId', 'playerId', 'count', 'updatedAt'
+        ]) &&
+        request.resource.data.keys().hasOnly([
+          'cycleId', 'playerId', 'count', 'updatedAt'
+        ]) &&
+        request.resource.data.cycleId == resource.data.cycleId &&
+        request.resource.data.playerId == resource.data.playerId &&
+        counterId ==
+          request.resource.data.cycleId + '__' +
+          request.resource.data.playerId &&
+        request.resource.data.diff(resource.data)
+          .affectedKeys().hasOnly(['count', 'updatedAt']) &&
+        resource.data.count is int &&
+        request.resource.data.count is int &&
+        request.resource.data.count == resource.data.count + 1 &&
+        request.resource.data.updatedAt is int &&
+        isCurrentHypeCycle(resource.data.cycleId) &&
+        matchingVoteExistsAfter(
+          resource.data.cycleId,
+          resource.data.playerId
+        );
+
+      allow delete: if false;
+    }
+
+    // Deny every document path not explicitly allowed above.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
