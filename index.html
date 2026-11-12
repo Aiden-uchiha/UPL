@@ -831,6 +831,10 @@ button:active,.btn:active,.navbtn:active,.market-player-row:active,.trk-chip:act
       <div class="brand" data-act="goto" data-view="registry"><span class="ball">👑</span> <span id="brandName">Unmatched Premier League</span></div>
       <span class="season-chip" id="seasonChip">2026 Season</span>
       <div class="spacer"></div>
+      <div class="row" style="gap:6px;align-items:center" aria-label="Page history">
+        <button class="btn sm" data-act="history:back" title="Go back" aria-label="Go back">←</button>
+        <button class="btn sm" data-act="history:forward" title="Go forward" aria-label="Go forward">→</button>
+      </div>
       <span class="cloud-badge off" id="cloudBadge">💾 LOCAL</span>
       <span class="pill cy" id="userChip" style="display:none"></span>
     </div>
@@ -3322,11 +3326,61 @@ function render(){
   }
 }
 
+function currentRouteHash(){
+  const parts = [app.currentView];
+  if (app.currentView === 'teamprofile' && app._teamViewId) parts.push(app._teamViewId);
+  if (app.currentView === 'tournament' && app._tourViewId) parts.push(app._tourViewId);
+  if (app.currentView === 'archive' && app._archiveViewId) parts.push(app._archiveViewId);
+  return '#/' + parts.map(part => encodeURIComponent(String(part))).join('/');
+}
+
+function pushRouteHistory(replace){
+  const nextHash = currentRouteHash();
+  if (window.location.hash === nextHash) return;
+  const method = replace ? 'replaceState' : 'pushState';
+  window.history[method]({ uplRoute: true }, '', nextHash);
+}
+
+function restoreRouteFromHash(shouldRender){
+  let parts = [];
+  try {
+    const raw = String(window.location.hash || '').replace(/^#\/?/, '');
+    parts = raw ? raw.split('/').map(part => decodeURIComponent(part)) : [];
+  } catch(routeError) {
+    console.warn('Invalid UPL page route; returning to Registry.', routeError);
+  }
+  let view = parts[0] || 'registry';
+  if (!VIEWS[view]) view = 'registry';
+  app._teamViewId = null;
+  app._tourViewId = null;
+  app._archiveViewId = null;
+  app.currentView = view;
+  if (view === 'teamprofile') {
+    const teamId = parts[1] || '';
+    if (teamId && app.state.teams.some(team => team.id === teamId)) app._teamViewId = teamId;
+    else app.currentView = 'teams';
+  } else if (view === 'tournament') {
+    const tournamentId = parts[1] || '';
+    if (tournamentId && app.state.tournaments.some(tournament => tournament.id === tournamentId)) app._tourViewId = tournamentId;
+  } else if (view === 'archive') {
+    const archiveId = parts[1] || '';
+    if (archiveId && app.state.archives.some(archive => archive.id === archiveId)) app._archiveViewId = archiveId;
+  }
+  if (shouldRender !== false) {
+    render();
+    window.scrollTo({ top:0, behavior:'auto' });
+  }
+  pushRouteHistory(true);
+}
+
+window.addEventListener('popstate', () => restoreRouteFromHash(true));
+
 function go(view){
   app.currentView = view;
   if (view !== 'teamprofile') app._teamViewId = null;
   if (view !== 'tournament') app._tourViewId = null;
   if (view !== 'archive') app._archiveViewId = null;
+  pushRouteHistory(false);
   render();
   window.scrollTo({ top:0, behavior:'smooth' });
 }
@@ -4157,6 +4211,8 @@ document.addEventListener('click', async e => {
   const id = el.dataset.id;
 
   if (act === 'goto'){ go(el.dataset.view); return; }
+  if (act === 'history:back'){ window.history.back(); return; }
+  if (act === 'history:forward'){ window.history.forward(); return; }
   if (act === 'modal:close'){ closeModal(); return; }
 
   if (act === 'login'){
@@ -4267,7 +4323,7 @@ document.addEventListener('click', async e => {
     });
     await logAdmin('Deleted team "' + t.name + '"');
     await saveState();
-    if (app.currentView === 'teamprofile'){ app._teamViewId = null; app.currentView = 'teams'; }
+    if (app.currentView === 'teamprofile'){ app._teamViewId = null; app.currentView = 'teams'; pushRouteHistory(false); }
     render(); toast('🗑️ Team deleted', 'err');
     return;
   }
@@ -4294,6 +4350,7 @@ document.addEventListener('click', async e => {
     if ($('#modalRoot').classList.contains('open')) closeModal();
     app._teamViewId = id;
     app.currentView = 'teamprofile';
+    pushRouteHistory(false);
     render(); window.scrollTo({top:0,behavior:'smooth'});
     return;
   }
@@ -4931,10 +4988,11 @@ document.addEventListener('click', async e => {
   if (act === 'tournament:view'){
     app._tourViewId = id;
     app.currentView = 'tournament';
+    pushRouteHistory(false);
     render(); window.scrollTo({top:0,behavior:'smooth'});
     return;
   }
-  if (act === 'tournament:back'){ app._tourViewId = null; render(); return; }
+  if (act === 'tournament:back'){ app._tourViewId = null; pushRouteHistory(false); render(); return; }
   if (act === 'tournament:advance'){
     if (!app.isAdmin) return;
     advanceToKnockout(id);
@@ -4973,8 +5031,8 @@ document.addEventListener('click', async e => {
     await archiveSeason();
     return;
   }
-  if (act === 'archive:view'){ app._archiveViewId = id; render(); window.scrollTo({top:0,behavior:'smooth'}); return; }
-  if (act === 'archive:back'){ app._archiveViewId = null; render(); return; }
+  if (act === 'archive:view'){ app._archiveViewId = id; pushRouteHistory(false); render(); window.scrollTo({top:0,behavior:'smooth'}); return; }
+  if (act === 'archive:back'){ app._archiveViewId = null; pushRouteHistory(false); render(); return; }
   if (act === 'archive:del'){
     if (!app.isAdmin) return;
     if (!confirm('Delete this archived season?')) return;
@@ -5634,6 +5692,7 @@ async function archiveSeason(){
   try {
     loadLocal();
     loadHype();
+    restoreRouteFromHash(false);
     app._pendingCloudSave = hasPendingCloudSave();
     render();
     setCloudBadge('⏳ CONNECTING', false);
