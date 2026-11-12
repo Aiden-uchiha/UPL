@@ -1046,9 +1046,37 @@ tbody tr.top3 td:first-child{border-left:5px solid #e88c50!important}
 :root[data-theme="light"] .pl-week-chip{background:#fff;color:#38003c;border-color:#d7d1df}:root[data-theme="light"] .pl-week-chip.active{background:#38003c;color:#fff}
 :root[data-theme="light"] .pl-lineup-table td{color:#282238!important}
 
+/* Cloud-first startup screen: never expose browser-local league data before cloud sync. */
+#cloudStartup{
+ position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;
+ padding:24px;background:radial-gradient(ellipse at 50% 28%,rgba(233,0,82,.17),transparent 42%),linear-gradient(145deg,#210026,#38003c 58%,#4b0751);
+ color:#fff;text-align:center;transition:opacity .28s ease,visibility .28s ease;
+}
+#cloudStartup.is-hidden{opacity:0;visibility:hidden;pointer-events:none}
+#cloudStartup .startup-inner{width:min(100%,390px);display:flex;flex-direction:column;align-items:center;gap:15px}
+#cloudStartup .startup-crest{width:76px;height:76px;border-radius:23px;display:grid;place-items:center;background:#fff;color:#38003c;font-size:24px;font-weight:1000;letter-spacing:-1px;box-shadow:0 12px 38px rgba(0,0,0,.24);border:3px solid rgba(255,255,255,.65)}
+#cloudStartup h1{margin:4px 0 0;font-size:clamp(21px,5vw,28px);line-height:1.15;font-weight:950;letter-spacing:.3px}
+#cloudStartup .startup-sub{margin:0;color:rgba(255,255,255,.72);font-size:13px;max-width:290px}
+#cloudStartup .startup-spinner{width:34px;height:34px;border:3px solid rgba(255,255,255,.22);border-top-color:#ffb4ce;border-right-color:#e90052;border-radius:50%;animation:uplSpin .8s linear infinite;margin:8px 0 2px}
+#cloudStartup .startup-button{min-height:48px;width:min(100%,260px);border:1px solid rgba(255,255,255,.25);border-radius:12px;background:#e90052;color:#fff;font:800 13px/1.2 inherit;letter-spacing:.6px;padding:13px 18px;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+#cloudStartup .startup-button:disabled{opacity:1;cursor:wait}
+#cloudStartup .startup-button.retry{background:#fff;color:#38003c;cursor:pointer}
+#cloudStartup .startup-foot{font-size:10px;color:rgba(255,255,255,.5);letter-spacing:1.2px;text-transform:uppercase}
+@keyframes uplSpin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){#cloudStartup .startup-spinner{animation:none;border-top-color:#e90052}}
 </style>
 </head>
 <body>
+<div id="cloudStartup" role="status" aria-live="polite">
+ <div class="startup-inner">
+  <div class="startup-crest" aria-hidden="true">UPL</div>
+  <h1>Unmatched Premier League</h1>
+  <p class="startup-sub" id="startupMessage">Connecting to the league database and fetching the latest season...</p>
+  <div class="startup-spinner" id="startupSpinner" aria-hidden="true"></div>
+  <button class="startup-button" id="startupButton" type="button" disabled>Loading the league</button>
+  <div class="startup-foot">Official league database</div>
+ </div>
+</div>
 
 <header class="top">
   <div class="wrap" style="padding-bottom:0">
@@ -1607,7 +1635,7 @@ async function loadCloudState(){
       const data = snap.data();
       app._cloudRevision = Number(data && data.revision) || 0;
       if (data && data.state) {
-        if (hasPendingCloudSave()) {
+        if (hasPendingCloudSave() && app.isAdmin) {
           const localPublic = Object.assign({}, app.state, { logs: [] });
           if (stableSerialize(localPublic) === stableSerialize(data.state)) {
             clearPendingCloudSave();
@@ -1657,7 +1685,7 @@ function watchCloudState(){
       const data = snap.data();
       if (!data || !data.state) return;
       const incomingRevision = Number(data.revision) || 0;
-      if (hasPendingCloudSave()) {
+      if (hasPendingCloudSave() && app.isAdmin) {
         app._pendingCloudSave = true;
         setCloudBadge('⚠️ UNSAVED LOCAL CHANGES', false);
         return;
@@ -6129,7 +6157,34 @@ async function archiveSeason(){
   toast('📦 Season archived & reset', 'ok');
 }
 
-// Render local content immediately; Firebase connects in the background.
+function setStartupScreen(mode, message){
+  const screen = $('#cloudStartup');
+  const button = $('#startupButton');
+  const spinner = $('#startupSpinner');
+  const copy = $('#startupMessage');
+  if (!screen || !button || !spinner || !copy) return;
+  if (mode === 'ready'){
+    screen.classList.add('is-hidden');
+    return;
+  }
+  screen.classList.remove('is-hidden');
+  copy.textContent = message || 'Connecting to the league database and fetching the latest season...';
+  if (mode === 'error'){
+    spinner.style.display = 'none';
+    button.disabled = false;
+    button.classList.add('retry');
+    button.textContent = 'Retry connection';
+    button.onclick = () => window.location.reload();
+  } else {
+    spinner.style.display = '';
+    button.disabled = true;
+    button.classList.remove('retry');
+    button.textContent = 'Loading the league';
+    button.onclick = null;
+  }
+}
+
+// Keep the local render hidden until Firebase has supplied the shared league state.
 (async function boot(){
   try {
     loadLocal();
@@ -6137,13 +6192,14 @@ async function archiveSeason(){
     restoreRouteFromHash(false);
     app._pendingCloudSave = hasPendingCloudSave();
     render();
+    setStartupScreen('loading');
     setCloudBadge('⏳ CONNECTING', false);
 
     const firebaseReady = await initDatabase();
     if (!firebaseReady) {
-      setCloudBadge('⚠️ FIREBASE OFFLINE • LOCAL MODE', false);
-      render();
-      console.warn('Firebase unavailable; local browser storage remains active.');
+      setCloudBadge('⚠️ FIREBASE OFFLINE', false);
+      setStartupScreen('error', 'We could not connect to the league database. Check your internet connection and try again.');
+      console.warn('Firebase unavailable; local browser data is intentionally hidden from visitors.');
       return;
     }
 
@@ -6199,16 +6255,32 @@ async function archiveSeason(){
     });
 
     await initialAuth;
+
+    // Public visitors must start from a clean default state, then fetch the shared Firestore copy.
+    // This prevents stale browser storage from appearing as if it were the live league.
+    if (!app.isAdmin) {
+      app.state = hydrate(null);
+      app._pendingCloudSave = false;
+      const cloudLoaded = await loadCloudState();
+      if (!cloudLoaded) {
+        const badgeText = ($('#cloudBadge') && $('#cloudBadge').textContent) || '';
+        const cloudFailed = /LOCAL BACKUP|SYNC ERROR|UNAVAILABLE/i.test(badgeText);
+        if (cloudFailed) {
+          setStartupScreen('error', 'The league database could not be reached. Your browser’s saved copy is hidden so you won’t see outdated league data.');
+          return;
+        }
+      }
+    }
     if (!app.isAdmin && !authClient.currentUser) {
       setCloudBadge('⚠️ READER AUTH UNAVAILABLE', false);
     }
     render();
+    setStartupScreen('ready');
     console.log('%c👑 Unmatched Premier League ready', 'color:#e90052;font-weight:900');
   } catch(bootError) {
     console.error('League startup failed:', bootError);
-    setCloudBadge('⚠️ STARTUP ERROR • LOCAL MODE', false);
-    try { render(); } catch(renderError) { console.error('Fallback render failed:', renderError); }
-    toast('The league opened in local mode because startup hit an error. Your browser backup was preserved.', 'err');
+    setCloudBadge('⚠️ STARTUP ERROR', false);
+    setStartupScreen('error', 'The league could not finish connecting to the cloud. Your local browser copy is being kept private. Please retry.');
   }
 })();
 window.addEventListener('beforeunload', stopCloudListeners, { once: true });
