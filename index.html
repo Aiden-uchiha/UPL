@@ -900,6 +900,104 @@ tbody tr.top3 td:first-child{border-left:3px solid #cd7f4b}
   background-size:240% 100%;animation:rankBarShine 4.4s ease-in-out infinite;
 }
 
+/* ===== HIGH-CONTRAST MEDAL COLOURS ===== */
+.rk.rank1,.rank1{
+  background:linear-gradient(135deg,#fff0a3 0%,#ffc928 38%,#d88a00 72%,#fff0a3 100%)!important;
+  color:#291800!important;border:1px solid #fff0a3!important;
+  box-shadow:0 0 0 1px rgba(255,201,40,.5),0 0 16px rgba(255,190,35,.42);
+  text-shadow:0 1px 0 rgba(255,255,255,.35);
+}
+.rk.rank2,.rank2{
+  background:linear-gradient(135deg,#ffffff 0%,#dce5f2 38%,#8d9fb7 72%,#f7faff 100%)!important;
+  color:#162235!important;border:1px solid #f5f8ff!important;
+  box-shadow:0 0 0 1px rgba(210,224,242,.48),0 0 16px rgba(190,210,235,.34);
+  text-shadow:0 1px 0 rgba(255,255,255,.45);
+}
+.rk.rank3,.rank3{
+  background:linear-gradient(135deg,#ffd2ad 0%,#e88c50 38%,#a94c21 72%,#ffd2ad 100%)!important;
+  color:#2c1107!important;border:1px solid #ffd2ad!important;
+  box-shadow:0 0 0 1px rgba(232,140,80,.5),0 0 16px rgba(205,112,57,.38);
+  text-shadow:0 1px 0 rgba(255,255,255,.32);
+}
+tbody tr.top1 td{
+  background-color:rgba(255,193,7,.19)!important;
+  border-top:1px solid rgba(255,209,102,.62)!important;
+  border-bottom:1px solid rgba(255,209,102,.5)!important;
+}
+tbody tr.top2 td{
+  background-color:rgba(191,208,231,.17)!important;
+  border-top:1px solid rgba(219,231,247,.52)!important;
+  border-bottom:1px solid rgba(192,207,228,.42)!important;
+}
+tbody tr.top3 td{
+  background-color:rgba(205,127,75,.2)!important;
+  border-top:1px solid rgba(255,180,130,.55)!important;
+  border-bottom:1px solid rgba(205,127,75,.48)!important;
+}
+tbody tr.top1 td:first-child{border-left:5px solid #ffc928!important}
+tbody tr.top2 td:first-child{border-left:5px solid #dce5f2!important}
+tbody tr.top3 td:first-child{border-left:5px solid #e88c50!important}
+
+/* Brighter metallic surfaces and glow on the chart bars themselves. */
+.bar.rank-bar-1,.bar.rank-bar-2,.bar.rank-bar-3{
+  min-height:17px!important;border-radius:9px;
+  overflow:hidden;
+}
+.bar.rank-bar-1{
+  border:1px solid #ffe17a;
+  background:#4c350b;
+  box-shadow:0 0 0 1px rgba(255,201,40,.42),0 0 15px rgba(255,190,35,.3);
+}
+.bar.rank-bar-2{
+  border:1px solid #e5edf8;
+  background:#344258;
+  box-shadow:0 0 0 1px rgba(210,224,242,.42),0 0 15px rgba(190,210,235,.27);
+}
+.bar.rank-bar-3{
+  border:1px solid #ffc39b;
+  background:#4a2718;
+  box-shadow:0 0 0 1px rgba(232,140,80,.42),0 0 15px rgba(205,112,57,.28);
+}
+.bar.rank-bar-1>span{
+  background:linear-gradient(90deg,#a86600 0%,#ffd21f 24%,#fff6bd 45%,#ffb900 68%,#ffe66a 84%,#a86600 100%)!important;
+  background-size:300% 100%;animation:rankBarShine 2.4s ease-in-out infinite;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.75),inset 0 -2px 0 rgba(110,65,0,.26);
+}
+.bar.rank-bar-2>span{
+  background:linear-gradient(90deg,#778ba5 0%,#d5e0ef 24%,#ffffff 45%,#aabbd0 68%,#eff5fc 84%,#778ba5 100%)!important;
+  background-size:300% 100%;animation:rankBarShine 2.9s ease-in-out infinite;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.88),inset 0 -2px 0 rgba(55,70,91,.24);
+}
+.bar.rank-bar-3>span{
+  background:linear-gradient(90deg,#8a3e19 0%,#d9793c 24%,#ffd0a7 45%,#b95e2b 68%,#f2a16c 84%,#8a3e19 100%)!important;
+  background-size:300% 100%;animation:rankBarShine 3.3s ease-in-out infinite;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.68),inset 0 -2px 0 rgba(80,32,12,.28);
+}
+
+/* Make the Ballon d'Or podium metals distinct even on the navy background. */
+.bd-rank-1{
+  background:linear-gradient(155deg,rgba(255,202,48,.42),rgba(54,39,15,.98) 62%)!important;
+  border:2px solid #ffd447!important;
+  box-shadow:0 0 0 1px rgba(255,212,71,.3),0 10px 34px rgba(255,190,35,.25),inset 0 0 28px rgba(255,210,70,.1)!important;
+}
+.bd-rank-2{
+  background:linear-gradient(155deg,rgba(220,232,246,.34),rgba(35,48,70,.98) 62%)!important;
+  border:2px solid #dbe6f5!important;
+  box-shadow:0 0 0 1px rgba(219,230,245,.25),0 10px 28px rgba(190,210,235,.2),inset 0 0 24px rgba(220,235,250,.08)!important;
+}
+.bd-rank-3{
+  background:linear-gradient(155deg,rgba(226,139,83,.38),rgba(58,34,25,.98) 62%)!important;
+  border:2px solid #df8d5c!important;
+  box-shadow:0 0 0 1px rgba(223,141,92,.28),0 10px 28px rgba(205,112,57,.22),inset 0 0 24px rgba(240,160,105,.08)!important;
+}
+.bd-rank-1 .bd-rank-label,.bd-rank-1 .bd-points{color:#ffda55!important;text-shadow:0 0 12px rgba(255,211,60,.22)}
+.bd-rank-2 .bd-rank-label,.bd-rank-2 .bd-points{color:#e2ecf8!important;text-shadow:0 0 12px rgba(220,235,250,.18)}
+.bd-rank-3 .bd-rank-label,.bd-rank-3 .bd-points{color:#ffb27f!important;text-shadow:0 0 12px rgba(230,139,83,.2)}
+.bd-rank-1 .bd-avatar{border-color:#ffd447!important;box-shadow:0 0 18px rgba(255,190,35,.45)!important}
+.bd-rank-2 .bd-avatar{border-color:#dbe6f5!important;box-shadow:0 0 16px rgba(190,210,235,.35)}
+.bd-rank-3 .bd-avatar{border-color:#df8d5c!important;box-shadow:0 0 16px rgba(205,112,57,.34)}
+
+
 </style>
 </head>
 <body>
