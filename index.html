@@ -738,21 +738,20 @@ tr.leg-total td{
   box-shadow:0 1px 2px rgba(56,0,60,.04);
 }
 
-/* Discord FAB */
-.discord-fab{
-  position:fixed;right:18px;bottom:18px;z-index:150;display:inline-flex;align-items:center;gap:8px;
-  padding:11px 16px;border:none;border-radius:999px;
-  background:linear-gradient(135deg,#5865F2,#404EED);color:#ffffff;text-decoration:none;
-  font-size:11px;font-weight:900;letter-spacing:.7px;
-  box-shadow:0 6px 22px rgba(88,101,242,.4);
-  transition:transform .16s,box-shadow .16s;
+/* Single Discord action in the header; no floating invite bubble. */
+.discord-top-link{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;flex:0 0 auto;
+  padding:9px 13px;border:1px solid rgba(255,255,255,.18);border-radius:999px;
+  background:linear-gradient(135deg,#5865F2,#404EED);color:#fff!important;
+  text-decoration:none!important;font-size:10.5px;font-weight:900;letter-spacing:.55px;
+  white-space:nowrap;box-shadow:0 4px 13px rgba(88,101,242,.28);
+  transition:transform .16s,box-shadow .16s,filter .16s;
 }
-.discord-fab:hover{transform:translateY(-3px);box-shadow:0 9px 30px rgba(88,101,242,.55)}
-.discord-fab .discord-icon{font-size:16px;line-height:1}
+.discord-top-link:hover{transform:translateY(-1px);filter:brightness(1.08);box-shadow:0 6px 18px rgba(88,101,242,.4)}
 @media (max-width:640px){
   .market-player-row{grid-template-columns:minmax(0,1fr) auto;gap:6px}
   .market-player-status{grid-column:1 / -1;text-align:left}
-  .discord-fab{right:12px;bottom:12px;padding:9px 12px;font-size:10px}
+  .discord-top-link{padding:8px 10px;font-size:9.5px}
 }
 
 @media (max-width:640px){
@@ -1057,6 +1056,7 @@ tbody tr.top3 td:first-child{border-left:5px solid #e88c50!important}
       <div class="brand" data-act="goto" data-view="registry"><div class="brand-logo" id="brandLogo" data-act="logo:edit" title="League logo">👑</div> <span id="brandName">Unmatched Premier League</span></div>
       <span class="season-chip" id="seasonChip">2026 Season</span>
       <button class="theme-toggle" id="themeToggle" type="button" data-act="theme:toggle" aria-label="Switch to dark mode">🌙 Dark</button>
+      <a class="discord-top-link" href="https://discord.gg/VwdyeGh97c" target="_blank" rel="noopener noreferrer" aria-label="Join the UPL Discord server">💬 Join Discord</a>
       <div class="spacer"></div>
       <div class="row" style="gap:6px;align-items:center" aria-label="Page history">
         <button class="btn sm" data-act="history:back" title="Go back" aria-label="Go back">←</button>
@@ -1073,9 +1073,7 @@ tbody tr.top3 td:first-child{border-left:5px solid #e88c50!important}
 
 <div id="modalRoot"></div>
 <div id="toastRoot"></div>
-<a class="discord-fab" href="https://discord.gg/qVt7R5z7T9" target="_blank" rel="noopener noreferrer" aria-label="Join the Unmatched Premier League Discord server">
-  <span class="discord-icon">💬</span><span>Join Discord</span>
-</a>
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 
