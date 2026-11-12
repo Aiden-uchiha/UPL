@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover">
 <title>Unmatched Premier League</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👑</text></svg>">
+<script>try{if(localStorage.getItem('upl_theme_v1')==='dark')document.documentElement.dataset.theme='dark'}catch(e){}</script>
 <style>
 :root{
   /* Premier League brand */
@@ -998,6 +999,54 @@ tbody tr.top3 td:first-child{border-left:5px solid #e88c50!important}
 .bd-rank-3 .bd-avatar{border-color:#df8d5c!important;box-shadow:0 0 16px rgba(205,112,57,.34)}
 
 
+/* ===== PREMIER LEAGUE-INSPIRED FIXTURES + MATCH CENTRE ===== */
+.theme-toggle{flex:0 0 auto;cursor:pointer;border:1px solid rgba(255,255,255,.24);border-radius:999px;padding:8px 13px;background:rgba(255,255,255,.12);color:#fff;font-family:inherit;font-size:11px;font-weight:800;letter-spacing:.3px;white-space:nowrap;transition:background .2s,border-color .2s,transform .2s}
+.theme-toggle:hover{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.48)}
+.pl-fixture-intro{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;padding:26px 22px;margin:8px 0 18px;border-radius:14px;color:#fff;background:linear-gradient(112deg,#25002c 0%,#4a0751 58%,#721047 100%);box-shadow:0 12px 30px rgba(34,0,42,.2)}
+.pl-fixture-intro>div:first-child>span,.pl-matchweek-kicker{display:block;font-size:9px;font-weight:900;letter-spacing:2px;text-transform:uppercase;opacity:.78}
+.pl-fixture-intro h3{font-size:26px;letter-spacing:.2px;margin-top:3px}.pl-fixture-intro p{margin:5px 0 0;color:rgba(255,255,255,.74);font-size:12px}
+.pl-fixture-count{text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:2px}.pl-fixture-count b{font-size:28px;line-height:1;font-variant-numeric:tabular-nums}.pl-fixture-count span{font-size:9px;letter-spacing:1.4px;font-weight:900;color:rgba(255,255,255,.7)}
+.pl-week-filters{display:flex;gap:8px;overflow-x:auto;padding:2px 0 12px;margin-bottom:12px;scrollbar-width:thin}.pl-week-chip{flex:0 0 auto;border:1px solid var(--line-2);border-radius:999px;padding:8px 14px;background:var(--panel);color:var(--ink);font-family:inherit;font-size:11px;font-weight:800;cursor:pointer;transition:all .2s ease;white-space:nowrap}.pl-week-chip:hover{border-color:var(--pl-pink);transform:translateY(-1px)}.pl-week-chip.active{background:var(--pl-purple);border-color:var(--pl-purple);color:#fff;box-shadow:0 4px 12px rgba(56,0,60,.18)}
+.pl-list-section{margin:20px 0 30px}.pl-list-section-title{display:flex;align-items:center;gap:10px;margin-bottom:12px}.pl-list-section-title h3{font-size:17px;letter-spacing:.2px;color:var(--ink)}.pl-list-section-title>span{padding:3px 8px;border-radius:999px;background:var(--bg-subtle);color:var(--dim);font-size:10px;font-weight:900}
+.pl-matchweek{margin:14px 0 22px}.pl-matchweek-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 2px 9px;border-bottom:2px solid var(--pl-pink);margin-bottom:10px}.pl-matchweek-heading h3{font-size:14px;letter-spacing:.4px;color:var(--ink);margin-top:2px}.pl-matchweek-heading>span{font-size:9px;font-weight:900;letter-spacing:1.2px;color:var(--dim)}.pl-matchweek-kicker{font-size:8px;letter-spacing:1.5px;color:var(--pl-pink);opacity:1}
+.pl-fixture-list{display:grid;grid-template-columns:1fr;gap:9px}.pl-fixture-card{position:relative;display:block;border:1px solid var(--line);border-radius:12px;padding:13px 16px 10px;background:var(--panel);color:var(--ink);cursor:pointer;box-shadow:0 2px 9px rgba(13,20,40,.06);transition:border-color .2s,box-shadow .2s,transform .2s}.pl-fixture-card:hover,.pl-fixture-card:focus-visible{border-color:var(--pl-pink);box-shadow:0 9px 24px rgba(56,0,60,.11);transform:translateY(-2px);outline:none}
+.pl-fixture-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding-bottom:9px;border-bottom:1px solid var(--line)}.pl-competition{font-size:9px;text-transform:uppercase;letter-spacing:1.1px;font-weight:900;color:var(--pl-pink)}.pl-fixture-date{font-size:10px;color:var(--dim);font-weight:700}.pl-status{margin-left:auto;font-size:8px;letter-spacing:1.2px;font-weight:900;padding:4px 8px;border-radius:999px}.pl-status.finished{background:rgba(0,150,90,.1);color:#008f58}.pl-status.upcoming{background:rgba(56,0,60,.08);color:var(--pl-purple)}
+.pl-fixture-main{display:grid;grid-template-columns:minmax(0,1fr) 112px minmax(0,1fr);align-items:center;gap:12px;padding:15px 4px 13px}.pl-fixture-team{min-width:0;display:flex;align-items:center;gap:12px;font-size:14px;font-weight:900;line-height:1.25}.pl-fixture-team.home{justify-content:flex-end;text-align:right}.pl-fixture-team.away{justify-content:flex-start;text-align:left}.pl-fixture-team>span{overflow-wrap:anywhere}.pl-fixture-centre{text-align:center;display:flex;flex-direction:column;align-items:center;gap:3px}.pl-fixture-score{font-size:25px;font-weight:950;letter-spacing:1px;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}.pl-score-divider{color:var(--pl-pink);padding:0 5px}.pl-fixture-centre>span{font-size:8px;letter-spacing:1.4px;font-weight:900;color:var(--dim)}.pl-fixture-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:9px;border-top:1px solid var(--line)}.pl-view-match{font-size:10px;font-weight:900;color:var(--pl-pink);letter-spacing:.2px}.pl-view-match span{display:inline-block;transition:transform .2s}.pl-fixture-card:hover .pl-view-match span{transform:translateX(5px)}.pl-fixture-actions{display:flex;align-items:center;gap:5px}.pl-fixture-actions .btn{padding:5px 9px}
+.pl-match-page{max-width:1160px;margin:0 auto;padding-bottom:30px}.pl-match-breadcrumb{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 0 12px}.pl-match-breadcrumb button{border:0;background:none;padding:6px 0;color:var(--pl-pink);font-family:inherit;font-size:11px;font-weight:900;cursor:pointer}.pl-match-breadcrumb button:hover{text-decoration:underline}.pl-match-breadcrumb>span{font-size:9px;text-transform:uppercase;letter-spacing:1.3px;color:var(--dim);font-weight:900}
+.pl-match-hero{border-radius:16px;overflow:hidden;color:#fff;background:linear-gradient(125deg,#230027 0%,#400047 48%,#681044 100%);box-shadow:0 14px 34px rgba(29,0,34,.2)}.pl-match-hero-meta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;padding:14px 18px 0}.pl-match-hero-meta span{font-size:9px;letter-spacing:1.5px;font-weight:900;text-transform:uppercase;color:rgba(255,255,255,.7)}.pl-match-hero-teams{display:grid;grid-template-columns:minmax(0,1fr) 180px minmax(0,1fr);gap:14px;align-items:center;padding:24px 24px 18px}.pl-match-club{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;text-align:center;min-width:0}.pl-match-club img{object-fit:contain}.pl-match-club>b{font-size:clamp(14px,2.1vw,21px);line-height:1.2;color:#fff;overflow-wrap:anywhere}.pl-match-result{display:flex;align-items:center;flex-direction:column;gap:7px}.pl-match-result .pl-status{margin:0;background:rgba(255,255,255,.13);color:#fff}.pl-match-score{display:flex;align-items:center;justify-content:center;gap:9px;font-size:44px;line-height:1;font-weight:950;letter-spacing:1px;color:#fff}.pl-match-score>i{font-style:normal;color:#ff5b8a;font-size:30px}.pl-match-score .pl-vs{font-size:28px}.pl-match-result>small{font-size:8px;letter-spacing:1.5px;color:rgba(255,255,255,.68);font-weight:900}.pl-match-hero-foot{display:flex;justify-content:space-between;gap:10px;padding:10px 17px;background:rgba(0,0,0,.16);font-size:8px;letter-spacing:1.4px;color:rgba(255,255,255,.65);font-weight:900}
+.pl-match-tabs{position:relative;display:grid;grid-template-columns:1fr 1fr;margin:16px 0 20px;border-bottom:1px solid var(--line);background:var(--panel);border-radius:10px 10px 0 0}.pl-match-tabs button{position:relative;z-index:1;min-height:48px;border:0;background:transparent;color:var(--dim);font-family:inherit;font-size:11px;font-weight:900;letter-spacing:.3px;cursor:pointer;padding:10px 8px;transition:color .22s ease,background .22s ease}.pl-match-tabs button.active{color:var(--pl-pink)}.pl-match-tabs::after{content:'';position:absolute;left:0;bottom:-1px;width:50%;height:3px;border-radius:3px;background:var(--pl-pink);transform:translateX(0);transition:transform .34s cubic-bezier(.2,.8,.2,1)}.pl-match-tabs[data-active="lineups"]::after{transform:translateX(100%)}.pl-match-tab-content{animation:plTabReveal .3s ease both}@keyframes plTabReveal{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
+.pl-overview-grid{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(230px,.85fr);gap:16px;align-items:start}.pl-overview-main,.pl-overview-side{display:flex;flex-direction:column;gap:14px;min-width:0}.pl-overview-panel,.pl-lineup-team{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:15px;box-shadow:0 3px 12px rgba(12,20,40,.045);min-width:0}.pl-leaders-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:9px}.pl-leaders-head>div>span,.pl-panel-heading>span,.pl-lineups-intro>span{display:block;font-size:8px;letter-spacing:1.6px;color:var(--pl-pink);font-weight:900}.pl-leaders-head h3,.pl-panel-heading h3{font-size:15px;letter-spacing:.2px;color:var(--ink);margin-top:3px}.pl-leader-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}.pl-leader-card{display:flex;flex-direction:column;align-items:flex-start;gap:5px;min-width:0;padding:12px;border:1px solid var(--line);border-radius:11px;background:var(--panel)}.pl-leader-icon{font-size:19px}.pl-leader-label{font-size:8px;letter-spacing:.8px;text-transform:uppercase;font-weight:900;color:var(--dim)}.pl-leader-value{font-size:25px;line-height:1.05;color:var(--ink);font-weight:950}.pl-leader-player{max-width:100%;font-size:11px;font-weight:900;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pl-leader-team{font-size:9px;color:var(--dim);font-weight:700;overflow-wrap:anywhere}.pl-panel-heading{margin-bottom:12px}.pl-info-row{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:11px}.pl-info-row:last-child{border-bottom:0}.pl-info-row>span{color:var(--dim)}.pl-info-row>b{text-align:right;color:var(--ink)}.pl-leg-score-list{display:flex;flex-direction:column;gap:7px}.pl-leg-score-row{display:flex;align-items:center;gap:12px;padding:10px;border-radius:9px;background:var(--bg-subtle)}.pl-leg-score-row>span{font-size:8px;font-weight:900;letter-spacing:1px;color:var(--dim)}.pl-leg-score-row>b{font-size:17px;color:var(--ink);font-variant-numeric:tabular-nums}.pl-leg-score-row>b i{font-style:normal;color:var(--pl-pink);padding:0 5px}.pl-leg-score-row>em{margin-left:auto;font-size:9px;font-style:normal;font-weight:800;color:var(--dim);text-align:right}.pl-honours-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.pl-honours-grid>div{display:flex;flex-direction:column;gap:5px;padding:10px;border-radius:9px;background:var(--bg-subtle);min-width:0}.pl-honours-grid span{font-size:9px;color:var(--dim);font-weight:900;letter-spacing:.8px}.pl-honours-grid b{font-size:11px;overflow-wrap:anywhere}.pl-note{font-size:11px;color:var(--dim);line-height:1.65;margin:0}.pl-lineups-intro{padding:13px 15px;margin-bottom:13px;border-radius:10px;background:var(--bg-subtle);border-left:3px solid var(--pl-pink)}.pl-lineups-intro p{font-size:11px;color:var(--dim);line-height:1.6;margin:5px 0 0}.pl-lineup-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}.pl-lineup-team{padding:0;overflow:hidden}.pl-lineup-team-head{display:flex;align-items:center;gap:10px;padding:14px;border-bottom:1px solid var(--line);background:var(--bg-subtle)}.pl-lineup-team-head>div{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}.pl-lineup-team-head b{font-size:13px;color:var(--ink)}.pl-lineup-team-head span{font-size:8px;font-weight:900;letter-spacing:1px;color:var(--dim)}.pl-lineup-team-head>strong{font-size:17px;color:var(--pl-pink)}.pl-lineup-team .tblwrap{border:0;border-radius:0;box-shadow:none}.pl-lineup-table{min-width:420px;font-size:11px}.pl-lineup-table th{position:static}.pl-lineup-table td{font-size:11px}
+@media(max-width:760px){.pl-overview-grid{grid-template-columns:1fr}.pl-leader-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.theme-toggle{padding:7px 9px;font-size:10px}.pl-fixture-intro{padding:19px 15px}.pl-fixture-intro h3{font-size:21px}.pl-fixture-main{grid-template-columns:minmax(0,1fr) 76px minmax(0,1fr);gap:5px;padding:13px 0}.pl-fixture-team{gap:6px;flex-direction:column;font-size:11px}.pl-fixture-team .tlogo{width:36px!important;height:36px!important}.pl-fixture-score{font-size:20px}.pl-fixture-bottom{align-items:flex-start;flex-direction:column}.pl-fixture-actions{width:100%;justify-content:flex-end}.pl-match-hero-teams{grid-template-columns:minmax(0,1fr) 92px minmax(0,1fr);gap:5px;padding:20px 9px 15px}.pl-match-club .tlogo{width:48px!important;height:48px!important}.pl-match-club>b{font-size:12px}.pl-match-score{font-size:29px;gap:5px}.pl-match-score>i{font-size:22px}.pl-match-score .pl-vs{font-size:22px}.pl-match-hero-meta{gap:7px}.pl-match-hero-meta span{font-size:7px}.pl-match-tabs button{font-size:10px;min-height:46px}.pl-lineup-grid{grid-template-columns:1fr}.pl-honours-grid{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.pl-match-tabs::after,.pl-match-tab-content,.pl-fixture-card,.pl-week-chip{transition:none!important;animation:none!important}}
+
+/* Light is the default first-visit theme. Dark remains the existing Matchday palette. */
+:root[data-theme="light"]{--bg:#f6f7fb;--bg-subtle:#eef0f6;--bg-tint:#fff;--ink:#231a32;--ink-2:#43384e;--dim:#727487;--line:#e1e3ec;--line-2:#cfd2df;--txt:#231a32;--panel:#fff;--pl-purple:#38003c;--pl-purple-dark:#2a0030;--pl-purple-mid:#4a0a4e;--pl-purple-light:#f3e8f5;--pl-purple-wash:#faf5fc;--pl-pink:#e90052;--pl-cyan:#087f8c;--pl-green:#0b9a62;--pl-gold:#d69400}
+:root[data-theme="light"] body{background:radial-gradient(ellipse at 50% -15%,#f2eaf6 0%,#f7f8fc 46%,#fff 85%);color:var(--ink)}
+:root[data-theme="light"] body::before{background:radial-gradient(ellipse 80% 90% at 50% 0%,rgba(90,24,100,.09),transparent 68%),radial-gradient(ellipse 45% 55% at 8% 0%,rgba(233,0,82,.05),transparent 65%),radial-gradient(ellipse 45% 55% at 92% 0%,rgba(4,140,160,.045),transparent 65%)}
+:root[data-theme="light"] body::after{background-image:radial-gradient(circle,rgba(56,0,60,.035) 1px,transparent 1px);background-size:22px 22px}
+:root[data-theme="light"] header.top{background:linear-gradient(115deg,#2a0030,#43004a 58%,#5a145e);border-bottom:1px solid rgba(255,255,255,.12);box-shadow:0 4px 18px rgba(56,0,60,.16)}
+:root[data-theme="light"] .brand{color:#fff}:root[data-theme="light"] .season-chip,:root[data-theme="light"] .cloud-badge{color:rgba(255,255,255,.82);border-color:rgba(255,255,255,.25);background:rgba(255,255,255,.09)}:root[data-theme="light"] .theme-toggle{background:rgba(255,255,255,.16);color:#fff;border-color:rgba(255,255,255,.34)}
+:root[data-theme="light"] .navbtn{background:#fff;color:#38003c;border-color:#e3dce8;box-shadow:0 1px 3px rgba(30,0,35,.05)}:root[data-theme="light"] .navbtn:hover{background:#f7eefa;color:#38003c;border-color:#b77bbd}:root[data-theme="light"] .navbtn.active{background:#38003c;color:#fff;border-color:#38003c}
+:root[data-theme="light"] .view-head h2,:root[data-theme="light"] .section-title{color:#38003c}
+:root[data-theme="light"] .card,:root[data-theme="light"] .grade-tile,:root[data-theme="light"] .statbox,:root[data-theme="light"] .match-card,:root[data-theme="light"] .tos-card,:root[data-theme="light"] .leg-block,:root[data-theme="light"] .ko-tie,:root[data-theme="light"] .market-deal-card,:root[data-theme="light"] .tblwrap,:root[data-theme="light"] .bd-podium-card,:root[data-theme="light"] .pl-overview-panel,:root[data-theme="light"] .pl-lineup-team,:root[data-theme="light"] .pl-leader-card{background:#fff!important;border-color:#e1e3ec!important;color:#231a32!important;box-shadow:0 2px 10px rgba(24,14,35,.055)}
+:root[data-theme="light"] .card::before,:root[data-theme="light"] .statbox::before,:root[data-theme="light"] .tos-card::before{background:linear-gradient(90deg,#38003c,#e90052,#08a6b5)}
+:root[data-theme="light"] .grade-tile h4,:root[data-theme="light"] .kv b,:root[data-theme="light"] .mc-team,:root[data-theme="light"] .trk-name,:root[data-theme="light"] .market-player-main b,:root[data-theme="light"] .bd-player-name,:root[data-theme="light"] .tos-name,:root[data-theme="light"] .pl-list-section-title h3,:root[data-theme="light"] .pl-matchweek-heading h3,:root[data-theme="light"] .pl-panel-heading h3,:root[data-theme="light"] .pl-leader-value,:root[data-theme="light"] .pl-lineup-team-head b{color:#231a32!important}
+:root[data-theme="light"] .grade-tile ul,:root[data-theme="light"] .grade-tile .gc-note,:root[data-theme="light"] .muted,:root[data-theme="light"] .hint,:root[data-theme="light"] .small,:root[data-theme="light"] .tiny{color:#727487}
+:root[data-theme="light"] th{background:#f2eaf5!important;color:#4c1552!important;border-color:#e1d8e7!important}:root[data-theme="light"] td{background:transparent;color:#282238!important;border-color:#e6e5ed!important}:root[data-theme="light"] tbody tr:nth-child(even){background:#faf9fc!important}
+:root[data-theme="light"] input,:root[data-theme="light"] select,:root[data-theme="light"] textarea{background:#fff!important;color:#231a32!important;border-color:#d6d4e0!important}
+:root[data-theme="light"] .btn{background:#fff;color:#38003c;border-color:#d7d1df}:root[data-theme="light"] .btn:hover{background:#38003c;color:#fff;border-color:#38003c}:root[data-theme="light"] .btn.magenta{background:#e90052;color:#fff;border-color:#e90052}:root[data-theme="light"] .btn.gold{background:#ffd166;color:#2c1b00;border-color:#ffd166}:root[data-theme="light"] .btn.lime{background:#00b875;color:#05281b;border-color:#00b875}:root[data-theme="light"] .btn.danger{background:#dc2626;color:#fff;border-color:#dc2626}
+:root[data-theme="light"] .pill{background:#f4f2f7;color:#62576e;border-color:#e1dce8}:root[data-theme="light"] .pill.cy{background:#e3f9fa;color:#087681;border-color:#b5edf0}:root[data-theme="light"] .pill.mg{background:#fde8f0;color:#c60047;border-color:#f4ccda}:root[data-theme="light"] .pill.li{background:#e4f8ee;color:#07824e;border-color:#bde8d1}:root[data-theme="light"] .pill.go{background:#fff4d9;color:#8b5c00;border-color:#f2dd9e}
+:root[data-theme="light"] .bar{background:#e9eaf1}:root[data-theme="light"] .mc-score{background:#f3e8f5;color:#38003c}:root[data-theme="light"] .rk-C{background:#e5e5ed;color:#4b4656}
+:root[data-theme="light"] .modal{background:#fff!important;border-color:#e1e3ec}:root[data-theme="light"] .modal-head{background:linear-gradient(110deg,#38003c,#5a145e)}:root[data-theme="light"] .modal-body{background:#fff!important;color:#231a32!important}:root[data-theme="light"] .modal-foot{background:#f6f5f8!important;border-color:#e1e3ec}:root[data-theme="light"] .toast{background:#fff!important;color:#231a32!important;border-color:#e1e3ec}
+:root[data-theme="light"] .market-directory{background:#f8f7fb!important;border-color:#e1e3ec}:root[data-theme="light"] .market-player-row{background:#fff!important;color:#231a32!important;border-color:#e1e3ec}
+:root[data-theme="light"] #view .cl-name,:root[data-theme="light"] #modalRoot .cl-name{color:#38003c!important}:root[data-theme="light"] #view .cl-name:hover,:root[data-theme="light"] #modalRoot .cl-name:hover{color:#c00050!important}
+:root[data-theme="light"] .empty{background:#faf9fc!important;border-color:#d9d5e1;color:#727487}:root[data-theme="light"] .warnbox{background:#fff5dc;color:#785000;border-color:#ecd79c}
+:root[data-theme="light"] .pl-fixture-card,:root[data-theme="light"] .pl-overview-panel,:root[data-theme="light"] .pl-lineup-team,:root[data-theme="light"] .pl-leader-card{background:#fff;color:#231a32}
+:root[data-theme="light"] .pl-fixture-score,:root[data-theme="light"] .pl-list-section-title h3,:root[data-theme="light"] .pl-matchweek-heading h3,:root[data-theme="light"] .pl-panel-heading h3,:root[data-theme="light"] .pl-leader-value,:root[data-theme="light"] .pl-info-row>b,:root[data-theme="light"] .pl-lineup-team-head b{color:#231a32}
+:root[data-theme="light"] .pl-week-chip{background:#fff;color:#38003c;border-color:#d7d1df}:root[data-theme="light"] .pl-week-chip.active{background:#38003c;color:#fff}
+:root[data-theme="light"] .pl-lineup-table td{color:#282238!important}
+
 </style>
 </head>
 <body>
@@ -1007,6 +1056,7 @@ tbody tr.top3 td:first-child{border-left:5px solid #e88c50!important}
     <div class="brandbar">
       <div class="brand" data-act="goto" data-view="registry"><div class="brand-logo" id="brandLogo" data-act="logo:edit" title="League logo">👑</div> <span id="brandName">Unmatched Premier League</span></div>
       <span class="season-chip" id="seasonChip">2026 Season</span>
+      <button class="theme-toggle" id="themeToggle" type="button" data-act="theme:toggle" aria-label="Switch to dark mode">🌙 Dark</button>
       <div class="spacer"></div>
       <div class="row" style="gap:6px;align-items:center" aria-label="Page history">
         <button class="btn sm" data-act="history:back" title="Go back" aria-label="Go back">←</button>
@@ -1273,9 +1323,21 @@ const app = {
   _draft: null,
   _hypeReady: false,
   _hypeDocs: {}, _hypeCounts: {}, _hypedPlayerIds: {}, _activePlayerProfileId: null,
-  _pendingCloudSave: false, _cloudRevision: 0
+  _pendingCloudSave: false, _cloudRevision: 0,
+  _matchViewId: null, _matchTab: 'overview', _fixtureRoundFilter: 'all'
 };
 window.app = app;
+function setTheme(mode){
+  const theme = mode === 'dark' ? 'dark' : 'light';
+  document.documentElement.dataset.theme = theme;
+  try { localStorage.setItem('upl_theme_v1', theme); } catch(e){}
+  const button = $('#themeToggle');
+  if (button){
+    button.textContent = theme === 'dark' ? '☀️ Light' : '🌙 Dark';
+    button.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+  }
+}
+setTheme(document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
 const econ = () => app.state.settings.economy;
 
 function hydrate(raw){
@@ -2814,80 +2876,96 @@ function moveFixture(id, dir){
   return true;
 }
 
+function formatFixtureDate(value){
+  if (!value) return 'Date TBC';
+  const date = new Date(String(value) + 'T12:00:00');
+  if (Number.isNaN(date.getTime())) return String(value);
+  return date.toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+}
+function fixtureRoundLabel(f){
+  return String((f && f.round) || '').trim() || 'Unassigned';
+}
 VIEWS.fixtures = () => {
-  const s = app.state;
-  const upcoming = sortedFixtures(s.fixtures.filter(f => !f.played));
-  const done = sortedFixtures(s.fixtures.filter(f => f.played)).reverse();
-  const fxRow = (f, i, list) => {
+  const state = app.state;
+  const rounds = Array.from(new Set(sortedFixtures(state.fixtures).map(fixtureRoundLabel)));
+  if (app._fixtureRoundFilter !== 'all' && rounds.indexOf(app._fixtureRoundFilter) < 0) app._fixtureRoundFilter = 'all';
+  const selectedRound = app._fixtureRoundFilter || 'all';
+  const include = f => selectedRound === 'all' || fixtureRoundLabel(f) === selectedRound;
+  const upcoming = sortedFixtures(state.fixtures.filter(f => !f.played && include(f)));
+  const done = sortedFixtures(state.fixtures.filter(f => f.played && include(f))).reverse();
+  const fixtureCard = (f,index,group) => {
     const A = teamById(f.teamAId), B = teamById(f.teamBId);
-    const m = f.matchId ? matchById(f.matchId) : null;
-    let score = 'VS';
-    if (m) { const agg = matchAggregate(m); score = `${agg.a} - ${agg.b}`; }
-    const roundFxs = list.filter(x => x.round === f.round && !x.tournamentId);
-    const localI = roundFxs.findIndex(x => x.id === f.id);
-    const isTournament = !!f.tournamentId;
-    return `<div class="match-card anim">
-      <div class="mc-header">
-        <span>${esc(f.competition)} ${f.round ? `• ${esc(f.round)}` : ''}</span>
-        <span>${f.legs} Leg${f.legs > 1 ? 's' : ''}</span>
-      </div>
-      <div class="mc-body">
-        ${teamSide(A, 42)}
-        <div class="mc-score">${score}</div>
-        ${teamSide(B, 42, true)}
-      </div>
-      <div class="mc-footer">
-        <span class="pill ${f.played ? 'li' : 'cy'}" style="font-size:9.5px">${f.played ? 'FINISHED' : 'PENDING'}</span>
-        <div class="row" style="gap:6px">
-          ${app.isAdmin && !f.played && !isTournament ? `
-            <button class="btn sm" data-act="fixture:move" data-id="${f.id}" data-dir="-1" ${localI <= 0 ? 'disabled' : ''} title="Move up">↑</button>
-            <button class="btn sm" data-act="fixture:move" data-id="${f.id}" data-dir="1" ${localI === roundFxs.length - 1 ? 'disabled' : ''} title="Move down">↓</button>
-            <button class="btn sm" data-act="fixture:edit" data-id="${f.id}" title="Edit">✏️</button>` : ''}
-          ${app.isAdmin ? (
-            f.played
-              ? `<button class="btn sm" data-act="match:view" data-id="${f.matchId}">📊</button>
-                 <button class="btn sm" data-act="match:edit" data-id="${f.matchId}">✏️</button>
-                 <button class="btn sm danger" data-act="match:del" data-id="${f.matchId}">🗑️</button>`
-              : `<button class="btn sm lime" data-act="track:open" data-id="${f.id}">▶️</button>
-                 <button class="btn sm" data-act="match:record" data-id="${f.id}">📝</button>`
-          ) : (f.played ? `<button class="btn sm" data-act="match:view" data-id="${f.matchId}">📊</button>` : '')}
-          ${app.isAdmin && !isTournament ? `<button class="btn sm danger" data-act="fixture:del" data-id="${f.id}">🗑️</button>` : ''}
-        </div>
-      </div>
-    </div>`;
-  };
-  let upHTML = '';
-  if (!upcoming.length){
-    upHTML = `<div class="empty"><span class="big">📭</span>No upcoming fixtures</div>`;
-  } else {
-    let lastRound = null, open = false;
-    upcoming.forEach((f, i) => {
-      if (f.round !== lastRound){
-        if (open) upHTML += `</div>`;
-        upHTML += `<div class="tiny" style="color:var(--pl-purple);letter-spacing:2px;text-transform:uppercase;margin:16px 0 10px;font-weight:900">${esc(f.round || 'No matchday')}</div><div class="grid g2">`;
-        lastRound = f.round; open = true;
+    const match = f.matchId ? matchById(f.matchId) : null;
+    const aggregate = match ? matchAggregate(match) : null;
+    const score = aggregate ? String(aggregate.a) + '<span class="pl-score-divider">:</span>' + String(aggregate.b) : 'VS';
+    const sameRound = group.filter(x => x.round === f.round && !x.tournamentId);
+    const localIndex = sameRound.findIndex(x => x.id === f.id);
+    const tournament = !!f.tournamentId;
+    let actions = '';
+    if (app.isAdmin && !f.played && !tournament){
+      actions += '<button class="btn sm" data-act="fixture:move" data-id="' + esc(f.id) + '" data-dir="-1" ' + (localIndex <= 0 ? 'disabled' : '') + ' title="Move up">↑</button>';
+      actions += '<button class="btn sm" data-act="fixture:move" data-id="' + esc(f.id) + '" data-dir="1" ' + (localIndex === sameRound.length - 1 ? 'disabled' : '') + ' title="Move down">↓</button>';
+      actions += '<button class="btn sm" data-act="fixture:edit" data-id="' + esc(f.id) + '" title="Edit">✏️</button>';
+    }
+    if (app.isAdmin){
+      if (f.played) actions += '<button class="btn sm" data-act="match:edit" data-id="' + esc(f.matchId || '') + '" title="Edit result">✏️</button>';
+      else {
+        actions += '<button class="btn sm lime" data-act="track:open" data-id="' + esc(f.id) + '" title="Track match">▶️</button>';
+        actions += '<button class="btn sm" data-act="match:record" data-id="' + esc(f.id) + '" title="Record result">📝</button>';
       }
-      upHTML += fxRow(f, i, upcoming);
+    }
+    if (app.isAdmin && !tournament) actions += '<button class="btn sm danger" data-act="fixture:del" data-id="' + esc(f.id) + '" title="Delete fixture">🗑️</button>';
+    return '<article class="pl-fixture-card" data-act="fixture:view" data-id="' + esc(f.id) + '" tabindex="0" role="button" aria-label="Open ' + esc(A.name) + ' versus ' + esc(B.name) + ' match centre">' +
+      '<div class="pl-fixture-top"><span class="pl-competition">' + esc(f.competition || 'League') + (tournament ? ' · Tournament' : '') + '</span>' +
+      '<span class="pl-fixture-date">' + esc(formatFixtureDate(f.date)) + '</span>' +
+      '<span class="pl-status ' + (f.played ? 'finished' : 'upcoming') + '">' + (f.played ? 'FULL TIME' : 'UPCOMING') + '</span></div>' +
+      '<div class="pl-fixture-main"><div class="pl-fixture-team home">' + teamLogo(A,46) + '<span>' + esc(A.name) + '</span></div>' +
+      '<div class="pl-fixture-centre"><div class="pl-fixture-score">' + score + '</div><span>' +
+      (match ? aggregate.legs.length + ' LEG' + (aggregate.legs.length === 1 ? '' : 'S') : (Number(f.legs) || 1) + ' LEGS') +
+      '</span></div><div class="pl-fixture-team away">' + teamLogo(B,46) + '<span>' + esc(B.name) + '</span></div></div>' +
+      '<div class="pl-fixture-bottom"><span class="pl-view-match">View match centre <span aria-hidden="true">→</span></span><div class="pl-fixture-actions">' +
+      actions + '</div></div></article>';
+  };
+  const groupedHTML = list => {
+    if (!list.length) return '<div class="empty"><span class="big">📭</span>No fixtures in this section.</div>';
+    const groups = new Map();
+    list.forEach(f => {
+      const label = fixtureRoundLabel(f);
+      if (!groups.has(label)) groups.set(label, []);
+      groups.get(label).push(f);
     });
-    if (open) upHTML += `</div>`;
+    let html = '';
+    groups.forEach((fixtures,round) => {
+      html += '<section class="pl-matchweek"><div class="pl-matchweek-heading"><div><span class="pl-matchweek-kicker">' +
+        esc(fixtures[0].competition || 'LEAGUE') + '</span><h3>' + esc(round) + '</h3></div><span>' +
+        fixtures.length + ' MATCH' + (fixtures.length === 1 ? '' : 'ES') + '</span></div><div class="pl-fixture-list">';
+      fixtures.forEach((fixture,index) => { html += fixtureCard(fixture,index,fixtures); });
+      html += '</div></section>';
+    });
+    return html;
+  };
+  let html = '<div class="view-head"><h2><span class="emoji float">📅</span> Fixtures &amp; Results</h2><div class="head-actions">';
+  if (app.isAdmin){
+    html += '<button class="btn lime" data-act="fixture:create">➕ Fixture</button>' +
+      '<button class="btn" data-act="fixture:autogen">🔁 Auto Fixtures</button>' +
+      '<button class="btn" data-act="report:open">📋 Paste Report</button>' +
+      '<button class="btn magenta" data-act="tournament:create">🏆 Tournament</button>';
   }
-  return `<div class="view-head">
-    <h2><span class="emoji float">📅</span> Fixtures</h2>
-    <div class="head-actions">
-      ${app.isAdmin ? `
-        <button class="btn lime" data-act="fixture:create"><span class="emoji">➕</span> Fixture</button>
-        <button class="btn" data-act="fixture:autogen"><span class="emoji">🔁</span> Auto Fixtures</button>
-        <button class="btn" data-act="report:open"><span class="emoji">📋</span> Paste Report</button>
-        <button class="btn magenta" data-act="tournament:create"><span class="emoji">🏆</span> Tournament</button>
-      ` : ''}
-    </div>
-  </div>
-  <div class="section-title">Upcoming (${upcoming.length})</div>
-  ${upHTML}
-  <div class="section-title">Completed (${done.length})</div>
-  <div class="grid g2">${done.length ? done.map((f, i) => fxRow(f, i, done)).join('') : '<div class="empty"><span class="big">🗂️</span>No completed fixtures</div>'}</div>`;
+  html += '</div></div><div class="pl-fixture-intro"><div><span>UNMATCHED PREMIER LEAGUE</span><h3>Match Centre</h3>' +
+    '<p>Select a fixture to view the match overview and player line-ups.</p></div><div class="pl-fixture-count"><b>' +
+    state.fixtures.length + '</b><span>ALL FIXTURES</span></div></div>';
+  html += '<div class="pl-week-filters"><button class="pl-week-chip ' + (selectedRound === 'all' ? 'active' : '') +
+    '" data-act="fixture:filter" data-round="__all__">All matchweeks</button>';
+  rounds.forEach(round => {
+    html += '<button class="pl-week-chip ' + (selectedRound === round ? 'active' : '') +
+      '" data-act="fixture:filter" data-round="' + esc(round) + '">' + esc(round) + '</button>';
+  });
+  html += '</div><section class="pl-list-section"><div class="pl-list-section-title"><h3>Upcoming fixtures</h3><span>' +
+    upcoming.length + '</span></div>' + groupedHTML(upcoming) + '</section>';
+  html += '<section class="pl-list-section"><div class="pl-list-section-title"><h3>Results</h3><span>' +
+    done.length + '</span></div>' + groupedHTML(done) + '</section>';
+  return html;
 };
-
 VIEWS.results = () => {
   const s = app.state;
   const ms = s.matches.slice().sort((a,b) => (b.timestamp||0) - (a.timestamp||0));
@@ -3491,10 +3569,14 @@ function renderNav(){
   $('#brandName').textContent = app.state.leagueName;
   $('#seasonChip').textContent = app.state.seasonName;
   const chip = $('#userChip');
-  if (app.user){
-    chip.style.display = '';
-    chip.textContent = '👑 ADMIN';
-  } else chip.style.display = 'none';
+  if (app.user){ chip.style.display = ''; chip.textContent = '👑 ADMIN'; }
+  else chip.style.display = 'none';
+  const themeButton = $('#themeToggle');
+  if (themeButton){
+    const dark = document.documentElement.dataset.theme === 'dark';
+    themeButton.textContent = dark ? '☀️ Light' : '🌙 Dark';
+    themeButton.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+  }
 }
 
 function render(){
@@ -3519,6 +3601,10 @@ function currentRouteHash(){
   if (app.currentView === 'teamprofile' && app._teamViewId) parts.push(app._teamViewId);
   if (app.currentView === 'tournament' && app._tourViewId) parts.push(app._tourViewId);
   if (app.currentView === 'archive' && app._archiveViewId) parts.push(app._archiveViewId);
+  if (app.currentView === 'matchdetail' && app._matchViewId){
+    parts.push(app._matchViewId);
+    if (app._matchTab && app._matchTab !== 'overview') parts.push(app._matchTab);
+  }
   return '#/' + parts.map(part => encodeURIComponent(String(part))).join('/');
 }
 
@@ -3542,6 +3628,8 @@ function restoreRouteFromHash(shouldRender){
   app._teamViewId = null;
   app._tourViewId = null;
   app._archiveViewId = null;
+  app._matchViewId = null;
+  app._matchTab = 'overview';
   app.currentView = view;
   if (view === 'teamprofile') {
     const teamId = parts[1] || '';
@@ -3553,6 +3641,14 @@ function restoreRouteFromHash(shouldRender){
   } else if (view === 'archive') {
     const archiveId = parts[1] || '';
     if (archiveId && app.state.archives.some(archive => archive.id === archiveId)) app._archiveViewId = archiveId;
+  } else if (view === 'matchdetail') {
+    const matchId = parts[1] || '';
+    const validMatch = app.state.matches.some(match => match.id === matchId);
+    const validFixture = app.state.fixtures.some(fixture => fixture.id === matchId);
+    if (matchId && (validMatch || validFixture)){
+      app._matchViewId = matchId;
+      app._matchTab = parts[2] === 'lineups' ? 'lineups' : 'overview';
+    } else app.currentView = 'fixtures';
   }
   if (shouldRender !== false) {
     render();
@@ -3568,6 +3664,7 @@ function go(view){
   if (view !== 'teamprofile') app._teamViewId = null;
   if (view !== 'tournament') app._tourViewId = null;
   if (view !== 'archive') app._archiveViewId = null;
+  if (view !== 'matchdetail'){ app._matchViewId = null; app._matchTab = 'overview'; }
   pushRouteHistory(false);
   render();
   window.scrollTo({ top:0, behavior:'smooth' });
@@ -4399,6 +4496,15 @@ document.addEventListener('click', async e => {
   const id = el.dataset.id;
 
   if (act === 'goto'){ go(el.dataset.view); return; }
+  if (act === 'theme:toggle'){ setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); return; }
+  if (act === 'fixture:filter'){ app._fixtureRoundFilter = el.dataset.round === '__all__' ? 'all' : (el.dataset.round || 'all'); render(); return; }
+  if (act === 'fixture:view'){ if (fixtureById(id)) openMatchPage(id,'overview'); return; }
+  if (act === 'match:tab'){
+    const tab = el.dataset.tab === 'lineups' ? 'lineups' : 'overview';
+    if (tab !== app._matchTab){ app._matchTab = tab; pushRouteHistory(false); render(); }
+    return;
+  }
+  if (act === 'match:back'){ go('fixtures'); return; }
   if (act === 'history:back'){ window.history.back(); return; }
   if (act === 'history:forward'){ window.history.forward(); return; }
   if (act === 'modal:close'){ closeModal(); return; }
@@ -5671,87 +5777,185 @@ document.addEventListener('click', e => {
     </tbody></table></div>`;
 });
 
-function openMatchDetail(m){
-  const A = teamById(m.teamAId), B = teamById(m.teamBId);
-  const agg = matchAggregate(m);
-  const mvp = m.mvpId ? playerById(m.mvpId) : null;
-  const motm = m.motmId ? playerById(m.motmId) : null;
-  const ps = m.playerStats || {};
-  let html = `<div class="row" style="justify-content:center;gap:14px;margin-bottom:12px">
-    ${teamLink(A, 40)}
-    <b style="font-size:26px;color:var(--pl-purple)">${agg.a} - ${agg.b}</b>
-    ${teamLink(B, 40)}
-  </div>
-  <div class="center muted small" style="margin-bottom:12px">
-    ${new Date(m.timestamp||0).toLocaleString()} &nbsp;|&nbsp; ${agg.legs.length} leg${agg.legs.length > 1 ? 's' : ''}
-  </div>
-  <div class="row" style="justify-content:center;gap:8px;margin-bottom:8px">
-    ${mvp ? `<span class="pill go">🏅 MVP: ${playerLink(mvp)}</span>` : (m.mvpSnapshot ? `<span class="pill go">🏅 MVP: <span class="muted">${esc(m.mvpSnapshot.name)} (deleted)</span></span>` : '')}
-    ${motm ? `<span class="pill mg">⭐ MOTM: ${playerLink(motm)}</span>` : (m.motmSnapshot ? `<span class="pill mg">⭐ MOTM: <span class="muted">${esc(m.motmSnapshot.name)} (deleted)</span></span>` : '')}
-  </div>`;
-  const legTable = (tid, legIndex) => {
-    const tm = teamById(tid);
-    const rows = [];
-    Object.keys(ps).forEach(pid => {
-      const p = playerById(pid);
-      const snapTeam = teamForMatch(m, pid);
-      if (snapTeam !== tid) return;
-      const arr = ps[pid];
-      const l = arr && arr[legIndex];
-      if (!l || !l.played) return;
-      if (p) rows.push({ p, l });
-      else rows.push({ p: { id: pid, name: '(deleted player)' }, l, ghost: true });
-    });
-    if (!rows.length) return `<div class="empty" style="padding:14px">No ${esc(tm.name)} players tracked</div>`;
-    const score = l => (+l.goals||0)*5 + (+l.assists||0)*3 + (+l.saves||0) + (+l.tackles||0)*0.5;
-    rows.sort((x,y) => score(y.l) - score(x.l));
-    const tot = rows.reduce((t,r) => ({
-      g: t.g + (+r.l.goals||0), a: t.a + (+r.l.assists||0),
-      s: t.s + (+r.l.saves||0), k: t.k + (+r.l.tackles||0)
-    }), { g:0, a:0, s:0, k:0 });
-    return `<div class="tblwrap"><table style="min-width:420px">
-      <thead><tr><th>${teamTag(tm, 20)}</th><th class="num">G</th><th class="num">A</th><th class="num">S</th><th class="num">T</th><th class="num">Grade</th></tr></thead>
-      <tbody>
-        ${rows.map(r => `<tr>
-          <td>${r.ghost ? `<span class="muted">${esc(r.p.name)}</span>` : playerLink(r.p)}</td>
-          <td class="num">${+r.l.goals||0}</td>
-          <td class="num">${+r.l.assists||0}</td>
-          <td class="num">${+r.l.saves||0}</td>
-          <td class="num">${+r.l.tackles||0}</td>
-          <td class="num"><span class="rk rk-${legGrade(r.l)}">${legGrade(r.l)}</span></td>
-        </tr>`).join('')}
-        <tr class="leg-total">
-          <td>Totals</td>
-          <td class="num">${tot.g}</td><td class="num">${tot.a}</td><td class="num">${tot.s}</td><td class="num">${tot.k}</td><td></td>
-        </tr>
-      </tbody>
-    </table></div>`;
-  };
-  agg.legs.forEach(l => {
-    const i = l.n - 1;
-    html += `<div class="leg-block">
-      <div class="leg-head">
-        <span class="pill cy">LEG ${l.n}</span>
-        <b class="mono">${l.a} - ${l.b}</b>${(agg.penaltyA || agg.penaltyB) ? '<span class="tiny muted">(before match penalties)</span>' : ''}
-        <span class="tiny muted">${l.a > l.b ? esc(A.name) + ' won the leg' : l.b > l.a ? esc(B.name) + ' won the leg' : 'Drawn leg'}</span>
-      </div>
-      ${legTable(A.id, i)}
-      <div style="height:12px"></div>
-      ${legTable(B.id, i)}
-    </div>`;
-  });
-  const matchFouls = normalizeMatchFouls(m.fouls, m.teamAId, m.teamBId);
-  html += `<div class="section-title" style="margin-top:20px">🚫 Fouls for this match</div>`;
-  if (matchFouls.length){
-    html += `<div class="tblwrap"><table><thead><tr><th>Foul</th><th>Team</th><th class="num">Score penalty</th></tr></thead><tbody>${matchFouls.map(f => {
-      const offender = teamById(f.teamId);
-      return `<tr><td>${esc(f.description)}</td><td>${offender ? teamTag(offender, 20) : '<span class="muted">Unknown team</span>'}</td><td class="num" style="color:#dc2626;font-weight:800">-${f.points}</td></tr>`;
-    }).join('')}</tbody></table></div>
-    <div class="hint" style="margin-top:8px">Raw aggregate: ${agg.rawA} - ${agg.rawB}. Applied penalties: ${agg.penaltyA ? `${esc(A.name)} -${agg.penaltyA}` : ''}${agg.penaltyA && agg.penaltyB ? ' • ' : ''}${agg.penaltyB ? `${esc(B.name)} -${agg.penaltyB}` : ''}. Final score: ${agg.a} - ${agg.b}.</div>`;
-  } else html += '<div class="muted small">No fouls recorded for this match.</div>';
-  openModal('📊 Match Details', html, `<button class="btn" data-act="modal:close">Close</button>`);
+function openMatchPage(id,tab){
+  const valid = matchById(id) || fixtureById(id);
+  if (!valid) return toast('Match or fixture not found.','err');
+  app._matchViewId = id;
+  app._matchTab = tab === 'lineups' ? 'lineups' : 'overview';
+  app.currentView = 'matchdetail';
+  pushRouteHistory(false);
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
 }
-
+function openMatchDetail(match){ if (match) openMatchPage(match.id,'overview'); }
+function matchPageContext(){
+  const id = app._matchViewId;
+  const match = matchById(id) || null;
+  const fixture = (match && fixtureById(match.fixtureId)) ||
+    (match && app.state.fixtures.find(item => item.matchId === match.id)) ||
+    fixtureById(id) || null;
+  const teamAId = match ? match.teamAId : (fixture && fixture.teamAId);
+  const teamBId = match ? match.teamBId : (fixture && fixture.teamBId);
+  if (!teamAId || !teamBId) return null;
+  const fallback = {id:id,teamAId:teamAId,teamBId:teamBId,competition:'League',round:'',legs:match ? (legCount(match)||1) : 1,date:'',played:!!match};
+  return {match:match,fixture:fixture || fallback,A:teamById(teamAId),B:teamById(teamBId)};
+}
+function matchPagePlayerStats(match,teamAId,teamBId){
+  if (!match) return [];
+  const aggregate = matchAggregate(match), rows = [];
+  Object.keys(match.playerStats || {}).forEach(pid => {
+    const teamId = teamForMatch(match,pid);
+    if (teamId !== teamAId && teamId !== teamBId) return;
+    const legs = match.playerStats[pid];
+    if (!Array.isArray(legs)) return;
+    const row = {id:pid,player:playerById(pid),teamId:teamId,goals:0,assists:0,saves:0,tackles:0,legsPlayed:0};
+    legs.forEach((leg,index) => {
+      if (!leg || !leg.played || !aggregate.legs.some(item => item.n === index+1)) return;
+      row.legsPlayed++;
+      row.goals += Number(leg.goals)||0;
+      row.assists += Number(leg.assists)||0;
+      row.saves += Number(leg.saves)||0;
+      row.tackles += Number(leg.tackles)||0;
+    });
+    if (row.legsPlayed) rows.push(row);
+  });
+  return rows;
+}
+function matchPageSeasonPlayers(teamAId,teamBId){
+  const stats = computePlayerStats();
+  return app.state.players.filter(player => !player.freeAgent && (player.teamId === teamAId || player.teamId === teamBId)).map(player => {
+    const row = stats[player.id] || {};
+    return {id:player.id,player:player,teamId:player.teamId,goals:Number(row.goals)||0,assists:Number(row.assists)||0,saves:Number(row.saves)||0,tackles:Number(row.tackles)||0,legsPlayed:Number(row.legsPlayed)||0};
+  });
+}
+function matchLeaderCards(rows,scopeLabel){
+  const metrics = [
+    {key:'goals',label:'Top scorer',icon:'⚽'},
+    {key:'assists',label:'Top assister',icon:'🅰️'},
+    {key:'tackles',label:'Top tackler',icon:'🛡️'},
+    {key:'saves',label:'Top saver',icon:'🧤'}
+  ];
+  let html = '<div class="pl-leaders-head"><div><span>PLAYER LEADERS</span><h3>' + scopeLabel + '</h3></div></div><div class="pl-leader-grid">';
+  metrics.forEach(metric => {
+    const sorted = rows.filter(row => row.player && row[metric.key] > 0).slice().sort((a,b) =>
+      b[metric.key]-a[metric.key] || a.player.name.localeCompare(b.player.name));
+    const best = sorted[0];
+    html += '<article class="pl-leader-card"><span class="pl-leader-icon">' + metric.icon + '</span><span class="pl-leader-label">' + metric.label + '</span>';
+    if (best){
+      html += '<b class="pl-leader-value">' + best[metric.key] + '</b><span class="pl-leader-player">' +
+        playerLink(best.player) + '</span><span class="pl-leader-team">' + esc(teamById(best.teamId).name) + '</span>';
+    } else {
+      html += '<b class="pl-leader-value">—</b><span class="pl-leader-player">No stats recorded</span><span class="pl-leader-team">' + metric.label.toUpperCase() + '</span>';
+    }
+    html += '</article>';
+  });
+  return html + '</div>';
+}
+function matchLineupTeamHTML(team,rows,seasonMode){
+  const teamRows = rows.filter(row => row.teamId === team.id).slice().sort((a,b) =>
+    (b.goals*5+b.assists*3+b.saves+b.tackles*.5) - (a.goals*5+a.assists*3+a.saves+a.tackles*.5) ||
+    String(a.player ? a.player.name : '').localeCompare(String(b.player ? b.player.name : '')));
+  const descriptor = seasonMode ? 'REGISTERED SQUAD · SEASON STATS' : 'PLAYERS TRACKED IN THIS MATCH';
+  let html = '<section class="pl-lineup-team"><div class="pl-lineup-team-head">' + teamLogo(team,34) +
+    '<div><b>' + esc(team.name) + '</b><span>' + descriptor + '</span></div><strong>' + teamRows.length + '</strong></div>';
+  if (!teamRows.length){
+    html += '<div class="empty pl-lineup-empty">' + (seasonMode ? 'No registered players for this team yet.' : 'No player appearances recorded for this team.') + '</div></section>';
+    return html;
+  }
+  html += '<div class="tblwrap"><table class="pl-lineup-table"><thead><tr><th>Player</th><th class="num">GP</th><th class="num">G</th><th class="num">A</th><th class="num">SV</th><th class="num">TK</th></tr></thead><tbody>';
+  teamRows.forEach(row => {
+    html += '<tr><td>' + (row.player ? playerLink(row.player) : '<span class="muted">Deleted player</span>') +
+      '</td><td class="num">' + row.legsPlayed + '</td><td class="num">' + row.goals +
+      '</td><td class="num">' + row.assists + '</td><td class="num">' + row.saves +
+      '</td><td class="num">' + row.tackles + '</td></tr>';
+  });
+  return html + '</tbody></table></div></section>';
+}
+function matchOverviewHTML(context,matchRows,seasonRows){
+  const match = context.match, fixture = context.fixture, A = context.A, B = context.B;
+  const aggregate = match ? matchAggregate(match) : null;
+  const hasMatchStats = matchRows.length > 0;
+  const leaders = hasMatchStats ? matchRows : seasonRows;
+  const scopeLabel = hasMatchStats ? 'This match' : 'Season leaders · both clubs';
+  const mvp = match && match.mvpId ? playerById(match.mvpId) : null;
+  const motm = match && match.motmId ? playerById(match.motmId) : null;
+  let html = '<div class="pl-overview-grid"><div class="pl-overview-main">';
+  html += '<section class="pl-overview-panel">' + matchLeaderCards(leaders,scopeLabel) + '</section>';
+  if (aggregate && aggregate.legs.length){
+    html += '<section class="pl-overview-panel"><div class="pl-panel-heading"><span>MATCH BREAKDOWN</span><h3>Leg-by-leg score</h3></div><div class="pl-leg-score-list">';
+    aggregate.legs.forEach(leg => {
+      const result = leg.a > leg.b ? esc(A.name) + ' won' : leg.b > leg.a ? esc(B.name) + ' won' : 'Draw';
+      html += '<div class="pl-leg-score-row"><span>LEG ' + leg.n + '</span><b>' + leg.a + '<i>:</i>' + leg.b + '</b><em>' + result + '</em></div>';
+    });
+    html += '</div></section>';
+  }
+  if (mvp || motm || (match && (match.mvpSnapshot || match.motmSnapshot))){
+    html += '<section class="pl-overview-panel"><div class="pl-panel-heading"><span>MATCH HONOURS</span><h3>Player of the match</h3></div><div class="pl-honours-grid">' +
+      '<div><span>🏅 MVP</span><b>' + (mvp ? playerLink(mvp) : esc(match.mvpSnapshot ? match.mvpSnapshot.name : '—')) + '</b></div>' +
+      '<div><span>⭐ MOTM</span><b>' + (motm ? playerLink(motm) : esc(match.motmSnapshot ? match.motmSnapshot.name : '—')) + '</b></div></div></section>';
+  }
+  const fouls = match ? normalizeMatchFouls(match.fouls,match.teamAId,match.teamBId) : [];
+  if (fouls.length){
+    html += '<section class="pl-overview-panel"><div class="pl-panel-heading"><span>DISCIPLINE</span><h3>Recorded fouls</h3></div><div class="tblwrap"><table><thead><tr><th>Foul</th><th>Team</th><th class="num">Penalty</th></tr></thead><tbody>';
+    fouls.forEach(foul => { html += '<tr><td>' + esc(foul.description) + '</td><td>' + esc(teamById(foul.teamId).name) + '</td><td class="num">−' + (Number(foul.points)||0) + '</td></tr>'; });
+    html += '</tbody></table></div></section>';
+  }
+  html += '</div><aside class="pl-overview-side"><section class="pl-overview-panel"><div class="pl-panel-heading"><span>MATCH INFORMATION</span><h3>Match details</h3></div>' +
+    '<div class="pl-info-row"><span>Competition</span><b>' + esc(fixture.competition || 'League') + '</b></div>' +
+    '<div class="pl-info-row"><span>Matchweek</span><b>' + esc(fixture.round || '—') + '</b></div>' +
+    '<div class="pl-info-row"><span>Date</span><b>' + esc(formatFixtureDate(fixture.date)) + '</b></div>' +
+    '<div class="pl-info-row"><span>Format</span><b>' + (Number(fixture.legs)||1) + ' leg' + (Number(fixture.legs)===1?'':'s') + '</b></div>' +
+    '<div class="pl-info-row"><span>Status</span><b>' + (match ? 'Full time' : 'Upcoming') + '</b></div></section>';
+  if (aggregate && (aggregate.penaltyA || aggregate.penaltyB)){
+    html += '<section class="pl-overview-panel"><div class="pl-panel-heading"><span>RESULT ADJUSTMENT</span><h3>Disciplinary penalties</h3></div><p class="pl-note">Raw score ' +
+      aggregate.rawA + ' : ' + aggregate.rawB + '. Applied penalty: ' + esc(A.name) + ' −' + aggregate.penaltyA +
+      ' · ' + esc(B.name) + ' −' + aggregate.penaltyB + '. Final score ' + aggregate.a + ' : ' + aggregate.b + '.</p></section>';
+  }
+  if (!hasMatchStats){
+    html += '<section class="pl-overview-panel"><div class="pl-panel-heading"><span>PLAYER DATA</span><h3>Season stats preview</h3></div><p class="pl-note">No player appearances have been recorded for this match yet. The leader cards use season totals from these two clubs until match stats are entered.</p></section>';
+  }
+  return html + '</aside></div>';
+}
+function renderMatchDetailPage(){
+  const context = matchPageContext();
+  if (!context) return '<div class="empty"><span class="big">🔎</span>Match not found. <button class="btn" data-act="match:back">Back to fixtures</button></div>';
+  const match = context.match, fixture = context.fixture, A = context.A, B = context.B;
+  const aggregate = match ? matchAggregate(match) : null;
+  const matchRows = matchPagePlayerStats(match,A.id,B.id);
+  const seasonRows = matchPageSeasonPlayers(A.id,B.id);
+  const useSeason = matchRows.length === 0;
+  const activeTab = app._matchTab === 'lineups' ? 'lineups' : 'overview';
+  const score = aggregate ? '<b>' + aggregate.a + '</b><i>:</i><b>' + aggregate.b + '</b>' : '<b class="pl-vs">VS</b>';
+  let content = '';
+  if (activeTab === 'lineups'){
+    content = '<div class="pl-lineups-intro"><span>TEAM SHEETS</span><p>' +
+      (useSeason
+        ? 'No match line-up has been recorded yet. These panels show registered squad members and their season totals.'
+        : 'Players shown here are those recorded as having played at least one leg. UPL records per-leg participation and stats, not tactical formations or shirt numbers.') +
+      '</p></div><div class="pl-lineup-grid">' +
+      matchLineupTeamHTML(A,useSeason ? seasonRows : matchRows,useSeason) +
+      matchLineupTeamHTML(B,useSeason ? seasonRows : matchRows,useSeason) + '</div>';
+  } else {
+    content = matchOverviewHTML(context,matchRows,seasonRows);
+  }
+  const status = match ? 'FULL TIME' : 'UPCOMING';
+  return '<div class="pl-match-page"><div class="pl-match-breadcrumb"><button type="button" data-act="match:back">← Fixtures &amp; Results</button><span>' +
+    esc(fixture.competition || 'League') + ' / ' + esc(fixture.round || 'Match') + '</span></div>' +
+    '<section class="pl-match-hero"><div class="pl-match-hero-meta"><span>' + esc(fixture.competition || 'LEAGUE') +
+    '</span><span>' + esc(fixture.round || 'MATCH') + '</span><span>' + esc(formatFixtureDate(fixture.date)) + '</span></div>' +
+    '<div class="pl-match-hero-teams"><div class="pl-match-club">' + teamLogo(A,64) + '<b>' + esc(A.name) +
+    '</b></div><div class="pl-match-result"><span class="pl-status ' + (match ? 'finished' : 'upcoming') + '">' +
+    status + '</span><div class="pl-match-score">' + score + '</div><small>' +
+    (match ? aggregate.legs.length + ' LEGS RECORDED' : (Number(fixture.legs)||1) + ' LEGS · KICK-OFF TBC') +
+    '</small></div><div class="pl-match-club">' + teamLogo(B,64) + '<b>' + esc(B.name) +
+    '</b></div></div><div class="pl-match-hero-foot"><span>UNMATCHED PREMIER LEAGUE</span><span>' +
+    (match ? 'MATCH REPORT' : 'FIXTURE PREVIEW') + '</span></div></section>' +
+    '<nav class="pl-match-tabs" data-active="' + activeTab + '" aria-label="Match details">' +
+    '<button type="button" class="' + (activeTab === 'overview' ? 'active' : '') + '" data-act="match:tab" data-tab="overview">Overview</button>' +
+    '<button type="button" class="' + (activeTab === 'lineups' ? 'active' : '') + '" data-act="match:tab" data-tab="lineups">Line-ups &amp; Player Stats</button></nav>' +
+    '<section class="pl-match-tab-content">' + content + '</section></div>';
+}
+VIEWS.matchdetail = () => renderMatchDetailPage();
 function marketDirectoryHTML(query, selectedId){
   const st = computePlayerStats();
   const q = String(query || '').trim().toLowerCase();
