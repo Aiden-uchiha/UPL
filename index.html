@@ -854,6 +854,7 @@ const LS_KEY   = 'lm_state_v1';
 const LS_LOGS  = 'lm_logs_v1';
 const LS_HYPE_COUNTS = 'lm_hype_counts_v1';
 const LS_HYPE_VOTES  = 'lm_hype_votes_v1';
+const LS_PENDING_CLOUD_SAVE = 'lm_pending_cloud_save_v1';
 // Paste the Firebase Web App config from Firebase Console → Project settings → Your apps.
 // Firebase's web config is public by design. NEVER put an admin password or service account key here.
 const FIREBASE_CONFIG = {
@@ -874,6 +875,8 @@ let dbClient = null;
 let firebaseApi = null;
 let cloudUnsubscribe = null;
 let hypeUnsubscribe = null;
+let authUnsubscribe = null;
+let initialAuthResolved = false;
 
 async function initDatabase(){
   const configured = !!(FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.authDomain &&
@@ -927,7 +930,22 @@ function isAuthorizedAdminUser(user){
 }
 function setCloudBadge(text, on){
   const badge = $('#cloudBadge');
-  if (badge){ badge.textContent = text; badge.className = 'cloud-badge ' + (on ? 'on' : 'off'); }
+  if (badge){ badge.textContent = text; badge.className = 'cloud-badge ' + (on ? 'on' : 'off'); badge.title = text; }
+}
+function hasPendingCloudSave(){
+  try { return !!localStorage.getItem(LS_PENDING_CLOUD_SAVE); } catch(e){ return !!app._pendingCloudSave; }
+}
+function clearPendingCloudSave(){
+  app._pendingCloudSave = false;
+  try { localStorage.removeItem(LS_PENDING_CLOUD_SAVE); } catch(e){}
+}
+function stopCloudListeners(){
+  try { if (cloudUnsubscribe) cloudUnsubscribe(); } catch(e){}
+  try { if (hypeUnsubscribe) hypeUnsubscribe(); } catch(e){}
+  cloudUnsubscribe = null; hypeUnsubscribe = null;
+}
+function positionIcon(position){
+  return ({'Striker':'🎯','Playmaker':'🎨','Defender':'🛡️','Goalkeeper':'🧤','All-Rounder':'🔄','Unclassified':'⚽'})[position] || '⚽';
 }
 
 const $  = s => document.querySelector(s);
@@ -1057,9 +1075,10 @@ function defaultState(){
 
 const app = {
   state: null, currentView: 'registry', user: null, isAdmin: false,
-  _draft: null, _suppress: false,
+  _draft: null,
   _hypeReady: false,
-  _hypeDocs: {}, _hypeCounts: {}, _hypedPlayerIds: {}, _activePlayerProfileId: null
+  _hypeDocs: {}, _hypeCounts: {}, _hypedPlayerIds: {}, _activePlayerProfileId: null,
+  _pendingCloudSave: false, _cloudRevision: 0
 };
 window.app = app;
 const econ = () => app.state.settings.economy;
@@ -1271,28 +1290,52 @@ function loadLocal(){
 
 async function saveState(opts){
   opts = opts || {};
-  try { localStorage.setItem(LS_KEY, JSON.stringify(app.state)); } catch(e){ console.warn('LS save failed', e); }
-  try { localStorage.setItem(LS_LOGS, JSON.stringify(app.state.logs.slice(-200))); } catch(e){}
-  if (dbClient && app.isAdmin && app.user && ADMIN_UIDS.includes(String(app.user.uid||''))){
-    try {
-      const updatedAt = new Date().toISOString();
-      // Keep admin audit logs out of the public league document.
-      const publicState = Object.assign({}, app.state, { logs: [] });
-      await firebaseApi.setDoc(leagueStateRef(), {
-        state: publicState,
-        updatedAt,
-        updatedBy: 'Admin'
+  const stateSnapshot = JSON.stringify(app.state);
+  try { localStorage.setItem(LS_KEY, stateSnapshot); } catch(e){ console.warn('Local backup save failed:', e); }
+  try { localStorage.setItem(LS_LOGS, JSON.stringify((app.state.logs || []).slice(-200))); } catch(e){}
+  if (!(dbClient && app.isAdmin && app.user && ADMIN_UIDS.includes(String(app.user.uid||'')))) return false;
+
+  app._pendingCloudSave = true;
+  try { localStorage.setItem(LS_PENDING_CLOUD_SAVE, String(Date.now())); } catch(e){}
+  setCloudBadge('⏳ SAVING TO CLOUD', false);
+  try {
+    const updatedAt = new Date().toISOString();
+    const publicState = Object.assign({}, JSON.parse(stateSnapshot), { logs: [] });
+    const expectedRevision = Number(app._cloudRevision) || 0;
+    const nextRevision = await firebaseApi.runTransaction(dbClient, async transaction => {
+      const stateRef = leagueStateRef();
+      const logsRef = adminLogsRef();
+      const stateSnap = await transaction.get(stateRef);
+      const logsSnap = await transaction.get(logsRef);
+      const actualRevision = stateSnap.exists() ? (Number(stateSnap.data().revision) || 0) : 0;
+      if (actualRevision !== expectedRevision) {
+        const conflict = new Error('CLOUD_CONFLICT');
+        conflict.code = 'app/cloud-conflict';
+        throw conflict;
+      }
+      const revision = actualRevision + 1;
+      transaction.set(stateRef, {
+        state: publicState, updatedAt, updatedBy: 'Admin', revision
       }, { merge: true });
-      await firebaseApi.setDoc(adminLogsRef(), {
-        logs: (app.state.logs || []).slice(-500),
-        updatedAt
+      transaction.set(logsRef, {
+        logs: (app.state.logs || []).slice(-500), updatedAt
       }, { merge: true });
-      setCloudBadge('☁️ FIRESTORE SYNCED', true);
-    } catch(e) {
-      console.error('Firestore save failed:', e);
-      setCloudBadge('⚠️ SYNC ERROR', false);
-      toast('Cloud save failed. Your changes remain saved in this browser.', 'err');
+      return revision;
+    });
+    app._cloudRevision = nextRevision;
+    clearPendingCloudSave();
+    setCloudBadge('☁️ FIRESTORE SYNCED', true);
+    return true;
+  } catch(e) {
+    console.error('Firestore save failed:', e);
+    app._pendingCloudSave = true;
+    setCloudBadge(e && e.code === 'app/cloud-conflict' ? '⚠️ CLOUD CONFLICT' : '⚠️ UNSAVED CHANGES', false);
+    if (e && e.code === 'app/cloud-conflict') {
+      toast('Another admin saved newer data. Your local changes are protected; refresh the league before retrying to avoid overwriting their work.', 'err');
+    } else {
+      toast('Cloud save failed. Your changes are saved locally and marked for retry; they will not be silently replaced on reload.', 'err');
     }
+    return false;
   }
 }
 
@@ -1304,7 +1347,18 @@ async function loadCloudState(){
     const snap = await firebaseApi.getDoc(leagueStateRef());
     if (snap.exists()) {
       const data = snap.data();
+      app._cloudRevision = Number(data && data.revision) || 0;
       if (data && data.state) {
+        if (hasPendingCloudSave()) {
+          const localPublic = Object.assign({}, app.state, { logs: [] });
+          if (JSON.stringify(localPublic) === JSON.stringify(data.state)) {
+            clearPendingCloudSave();
+          } else {
+            app._pendingCloudSave = true;
+            setCloudBadge('⚠️ UNSAVED LOCAL CHANGES', false);
+            return false;
+          }
+        }
         app.state = hydrate(data.state);
         migrate();
         loadHypedPlayerIds();
@@ -1316,16 +1370,23 @@ async function loadCloudState(){
         } else {
           app.state.logs = [];
         }
-        localStorage.setItem(LS_KEY, JSON.stringify(app.state));
-        localStorage.setItem(LS_LOGS, JSON.stringify((app.state.logs || []).slice(-200)));
+        try {
+          localStorage.setItem(LS_KEY, JSON.stringify(app.state));
+          localStorage.setItem(LS_LOGS, JSON.stringify((app.state.logs || []).slice(-200)));
+        } catch(storageError) { console.warn('Local backup update failed:', storageError); }
         setCloudBadge('☁️ FIRESTORE DATABASE', true);
         return true;
       }
     }
+    if (hasPendingCloudSave()) {
+      app._pendingCloudSave = true;
+      setCloudBadge('⚠️ UNSAVED LOCAL CHANGES', false);
+      return false;
+    }
     setCloudBadge('☁️ FIREBASE READY', true);
   } catch(e) {
     console.warn('Firestore load unavailable; using local backup.', e);
-    setCloudBadge('💾 LOCAL BACKUP', false);
+    setCloudBadge(hasPendingCloudSave() ? '⚠️ UNSAVED LOCAL CHANGES' : '💾 LOCAL BACKUP', false);
   }
   return false;
 }
@@ -1333,21 +1394,33 @@ async function loadCloudState(){
 function watchCloudState(){
   if (!dbClient || cloudUnsubscribe) return;
   cloudUnsubscribe = firebaseApi.onSnapshot(leagueStateRef(), snap => {
-    // Do not replace an administrator's in-progress local edits with a remote snapshot.
-    if (!snap.exists() || app.isAdmin) return;
-    const data = snap.data();
-    if (!data || !data.state) return;
-    app.state = hydrate(data.state);
-    app.state.logs = [];
-    migrate();
-    loadHypedPlayerIds();
-    rebuildHypeCountMap();
     try {
-      localStorage.setItem(LS_KEY, JSON.stringify(app.state));
-      localStorage.setItem(LS_LOGS, JSON.stringify([]));
-    } catch(e) { console.warn('Local backup update failed:', e); }
-    setCloudBadge('☁️ LIVE FIRESTORE', true);
-    render();
+      if (!snap.exists()) return;
+      const data = snap.data();
+      if (!data || !data.state) return;
+      const incomingRevision = Number(data.revision) || 0;
+      if (hasPendingCloudSave()) {
+        app._pendingCloudSave = true;
+        setCloudBadge('⚠️ UNSAVED LOCAL CHANGES', false);
+        return;
+      }
+      if (incomingRevision < (Number(app._cloudRevision) || 0)) return;
+      app._cloudRevision = incomingRevision;
+      app.state = hydrate(data.state);
+      app.state.logs = [];
+      migrate();
+      loadHypedPlayerIds();
+      rebuildHypeCountMap();
+      try {
+        localStorage.setItem(LS_KEY, JSON.stringify(app.state));
+        localStorage.setItem(LS_LOGS, JSON.stringify([]));
+      } catch(e) { console.warn('Local backup update failed:', e); }
+      setCloudBadge(app.isAdmin ? '☁️ LIVE ADMIN SYNC' : '☁️ LIVE FIRESTORE', true);
+      render();
+    } catch(e) {
+      console.error('Cloud snapshot processing failed:', e);
+      setCloudBadge('⚠️ SYNC ERROR', false);
+    }
   }, err => {
     console.error('Firestore live sync error:', err);
     setCloudBadge('⚠️ SYNC ERROR', false);
@@ -3217,8 +3290,7 @@ function renderNav(){
   const chip = $('#userChip');
   if (app.user){
     chip.style.display = '';
-    const who = app.isAdmin ? 'Admin' : 'Reader';
-    chip.textContent = '👤 ' + who + (app.isAdmin ? ' • ADMIN' : '');
+    chip.textContent = '👑 ADMIN';
   } else chip.style.display = 'none';
 }
 
@@ -5176,11 +5248,11 @@ function openPlayerProfile(pid){
       <span class="pill cy">${s.matches||0} matches</span>
       <span class="pill mg">${s.legsPlayed||0} legs</span>
       <span class="pill go"><span class="rk rk-${avgGrade(avg)}">${avgGrade(avg)}</span> overall</span>
-      <span class="pill position-pill">⚽ ${inferPlayerPosition(s)}</span>
+      <span class="pill position-pill">${positionIcon(inferPlayerPosition(s))} ${inferPlayerPosition(s)}</span>
     </div>
     <div class="row" style="margin-bottom:12px;gap:8px">${actionBtns}</div>
     <div class="hype-panel">
-      <div class="hype-panel-copy"><b>🔥 Fanbase Hype</b><span>Vote anonymously. No name or email is shown. One vote per player each season per anonymous session.</span></div>
+      <div class="hype-panel-copy"><b>🔥 Fanbase Hype</b><span>Vote anonymously. No name or email is shown. One vote per player each season per anonymous Firebase session. Clearing browser data may reset this limit.</span></div>
       <div class="hype-panel-action"><div class="hype-total"><b id="playerHypeCount">${num(hypeCount)}</b><small>HYPES</small></div>
         <button id="playerHypeButton" class="btn hype-fire" data-act="player:hype" data-id="${esc(p.id)}" ${alreadyHyped ? 'disabled' : ''}>${alreadyHyped ? '🔥 Already Hyped' : '🔥 Hype this player'}</button>
       </div>
@@ -5542,44 +5614,88 @@ async function archiveSeason(){
   toast('📦 Season archived & reset', 'ok');
 }
 
+// Render local content immediately; Firebase connects in the background.
 (async function boot(){
-  loadLocal();
-  loadHype();
-  const firebaseReady = await initDatabase();
-  if (firebaseReady) {
-    try {
-      const authUser = await new Promise(resolve => {
-        let unsubscribe = () => {};
-        unsubscribe = firebaseApi.onAuthStateChanged(authClient, user => {
-          unsubscribe();
-          resolve(user || null);
-        }, () => resolve(null));
-      });
-      if (isAuthorizedAdminUser(authUser)) {
-        app.user = { uid: authUser.uid };
-        app.isAdmin = true;
-      } else if (authUser && authUser.isAnonymous) {
-        app.user = null;
-        app.isAdmin = false;
-      } else if (authUser) {
-        await firebaseApi.signOut(authClient);
-      }
-      if (!authClient.currentUser) {
-        await firebaseApi.signInAnonymously(authClient);
-      }
-      loadHypedPlayerIds();
-    } catch(e) {
-      console.warn('Firebase auth restore failed:', e);
-      toast('Firebase Auth could not start. Enable Anonymous sign-in in Firebase Console.', 'err');
+  try {
+    loadLocal();
+    loadHype();
+    app._pendingCloudSave = hasPendingCloudSave();
+    render();
+    setCloudBadge('⏳ CONNECTING', false);
+
+    const firebaseReady = await initDatabase();
+    if (!firebaseReady) {
+      setCloudBadge('⚠️ FIREBASE OFFLINE • LOCAL MODE', false);
+      render();
+      console.warn('Firebase unavailable; local browser storage remains active.');
+      return;
     }
-    const foundCloudData = await loadCloudState();
-    if (!foundCloudData && app.isAdmin) await saveState();
-    watchCloudState();
-    watchHypeCounts();
+
+    let resolveInitialAuth;
+    const initialAuth = new Promise(resolve => { resolveInitialAuth = resolve; });
+    authUnsubscribe = firebaseApi.onAuthStateChanged(authClient, async user => {
+      try {
+        const wasAdmin = app.isAdmin;
+        if (isAuthorizedAdminUser(user)) {
+          app.user = { uid: user.uid };
+          app.isAdmin = true;
+          loadHypedPlayerIds();
+          if (!wasAdmin) {
+            const foundCloudData = await loadCloudState();
+            if (!foundCloudData && !hasPendingCloudSave()) await saveState();
+          }
+        } else {
+          app.user = null;
+          app.isAdmin = false;
+          loadHypedPlayerIds();
+          if (user && !user.isAnonymous) {
+            await firebaseApi.signOut(authClient);
+          } else if (!user) {
+            try { await firebaseApi.signInAnonymously(authClient); }
+            catch(anonError) {
+              console.warn('Anonymous Firebase sign-in unavailable:', anonError);
+              setCloudBadge('⚠️ READER AUTH UNAVAILABLE', false);
+            }
+          } else if (wasAdmin) {
+            setCloudBadge('🔒 ADMIN SIGNED OUT', false);
+          }
+        }
+        watchCloudState();
+        watchHypeCounts();
+        render();
+      } catch(authError) {
+        console.error('Firebase auth state handling failed:', authError);
+        setCloudBadge('⚠️ AUTH ERROR', false);
+        toast('Firebase authentication could not finish. Check the Firebase Auth providers and connection.', 'err');
+      } finally {
+        if (!initialAuthResolved) {
+          initialAuthResolved = true;
+          resolveInitialAuth();
+        }
+      }
+    }, authError => {
+      console.error('Firebase auth listener failed:', authError);
+      setCloudBadge('⚠️ AUTH ERROR', false);
+      if (!initialAuthResolved) {
+        initialAuthResolved = true;
+        resolveInitialAuth();
+      }
+    });
+
+    await initialAuth;
+    if (!app.isAdmin && !authClient.currentUser) {
+      setCloudBadge('⚠️ READER AUTH UNAVAILABLE', false);
+    }
+    render();
+    console.log('%c👑 Unmatched Premier League ready', 'color:#e90052;font-weight:900');
+  } catch(bootError) {
+    console.error('League startup failed:', bootError);
+    setCloudBadge('⚠️ STARTUP ERROR • LOCAL MODE', false);
+    try { render(); } catch(renderError) { console.error('Fallback render failed:', renderError); }
+    toast('The league opened in local mode because startup hit an error. Your browser backup was preserved.', 'err');
   }
-  render();
-  console.log('%c👑 Unmatched Premier League ready', 'color:#e90052;font-weight:900');
 })();
+window.addEventListener('beforeunload', stopCloudListeners, { once: true });
 </script>
 </body>
 </html>
