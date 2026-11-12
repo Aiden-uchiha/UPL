@@ -821,131 +821,6 @@ button:active,.btn:active,.navbtn:active,.market-player-row:active,.trk-chip:act
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
 @media(max-width:640px){.brand{font-size:16px}.brandbar{gap:8px}.navbtn{padding:8px 13px}.view-head{padding-top:22px}}
 
-
-/* ===== UPL PREMIER-STYLE DESIGN + MOBILE UX ===== */
-:root{
- --bg:#f5f3f7;--bg-subtle:#fff;--bg-tint:#f8f0f8;--ink:#25002b;--ink-2:#38003c;
- --dim:#727080;--line:#e7e1eb;--line-2:#d7cddd;--panel:#fff;
- --pl-purple:#38003c;--pl-purple-dark:#25002b;--pl-purple-mid:#4a0a4e;
- --pl-purple-light:#f1e8f3;--pl-purple-wash:#faf6fb;
- --pl-pink:#e90052;--pl-cyan:#04bfc8;--pl-green:#00a968;--pl-gold:#ffb81c;
- --txt:#25002b;--radius:14px;
-}
-html{scroll-padding-top:110px}
-body{background:radial-gradient(ellipse at 50% -15%,rgba(56,0,60,.09),transparent 60%),linear-gradient(180deg,#fbf9fc,#f5f3f7 58%,#f1eef4);color:var(--ink)}
-body::before{height:520px;background:radial-gradient(ellipse 78% 90% at 50% 0%,rgba(56,0,60,.10),transparent 68%),radial-gradient(ellipse 42% 60% at 0% 0%,rgba(233,0,82,.06),transparent 70%)}
-body::after{opacity:.42;background-image:radial-gradient(circle,rgba(56,0,60,.055) 1px,transparent 1px);background-size:24px 24px}
-.wrap{max-width:1420px;padding-left:18px;padding-right:18px}
-header.top{background:linear-gradient(115deg,#25002b,#38003c 62%,#510b55);border-bottom:3px solid var(--pl-pink);box-shadow:0 5px 24px rgba(37,0,43,.18);backdrop-filter:blur(14px)}
-.brandbar{min-height:66px;padding:12px 0 9px;gap:12px}
-.brand{min-width:0;font-size:19px;letter-spacing:.45px;gap:10px;text-shadow:none;text-transform:uppercase}
-.brand #brandName{overflow:hidden;text-overflow:ellipsis}
-.brand-mark,.brand-logo{width:42px;height:42px;flex:0 0 42px;border-radius:12px;object-fit:contain}
-.brand-mark{display:grid;place-items:center;color:#38003c;background:#fff;border:2px solid rgba(255,255,255,.82);font-size:12px;font-weight:1000;letter-spacing:-.6px;box-shadow:0 3px 12px rgba(0,0,0,.16)}
-.brand-mark[hidden]{display:none}
-.brand-logo{display:none;background:#fff;padding:4px;box-shadow:0 3px 12px rgba(0,0,0,.16)}
-.brand-logo.ready{display:block}
-.brand .ball{display:none}
-.season-chip,.cloud-badge{border-radius:7px;background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.2);color:#fff}
-.season-chip{letter-spacing:1px}.cloud-badge{font-size:9px}
-nav.nav{padding:9px 0 12px;gap:7px;scrollbar-width:none}
-.navbtn{border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.94);color:#38003c;border-radius:8px;padding:9px 13px;font-size:10px;box-shadow:0 2px 7px rgba(0,0,0,.07)}
-.navbtn:hover{background:#f8eaf3;color:#38003c;border-color:#ff83b0;transform:translateY(-1px)}
-.navbtn.active{background:#e90052;color:#fff;border-color:#e90052;box-shadow:0 3px 12px rgba(233,0,82,.2)}
-.navbtn.ghost{background:#fff0f5;color:#b30043;border-color:#ffc1d5}
-.navbtn.admin{background:#fff7e3;color:#755000;border-color:#f5d58a}
-.view-head{padding-top:27px}.view-head h2,.section-title,.tos-top,.trk-team-head{color:#38003c}
-.view-head h2{font-size:27px;letter-spacing:.2px}
-.view-head::after{height:3px;background:linear-gradient(90deg,#38003c,#e90052,transparent)}
-.section-title::before{background:linear-gradient(180deg,#38003c,#e90052)}
-.card,.grade-tile,.statbox,.match-card,.tos-card,.leg-block,.ko-tie,.market-deal-card,.tblwrap,.bd-podium-card{background:#fff;color:#25002b;border:1px solid #e8e1eb;box-shadow:0 4px 18px rgba(49,10,56,.055)}
-.card:hover,.match-card:hover{border-color:rgba(56,0,60,.24);box-shadow:0 10px 26px rgba(49,10,56,.11);transform:translateY(-2px)}
-.grade-tile h4,.kv b,.mc-team,.trk-name,.market-player-main b,.bd-player-name,.tos-name{color:#25002b}
-.grade-tile ul,.grade-tile .gc-note,.muted,.hint,.small,.tiny{color:#727080}
-th{background:#38003c;color:#fff;border-color:#54205a}
-td{color:#2b1c31;border-color:#ece7ef}
-tbody tr:nth-child(even){background:#faf8fb}tbody tr:hover{background:#f5eaf6}
-input,select,textarea{background:#fff;color:#25002b;border:1px solid #d8cddd;border-radius:9px}
-input:focus,select:focus,textarea:focus{border-color:#6d2a72;box-shadow:0 0 0 3px rgba(56,0,60,.10)}
-.btn{background:#38003c;color:#fff;border-color:#38003c;border-radius:8px;box-shadow:0 2px 7px rgba(56,0,60,.12)}
-.btn:hover{background:#510b55;color:#fff;border-color:#510b55;box-shadow:0 5px 14px rgba(56,0,60,.18)}
-.btn.magenta{background:#e90052;color:#fff;border-color:#e90052}
-.btn.gold{background:#ffb81c;color:#25002b;border-color:#ffb81c}
-.btn.lime{background:#00a968;color:#fff;border-color:#00a968}
-.pill{background:#f4eff6;border-color:#e6deea;color:#4d3d53;border-radius:7px}
-.pill.cy{background:#e5fbfc;color:#006c73;border-color:#b7eff1}
-.position-pill{background:#e5fbfc;color:#006c73;border:1px solid #a8e9ec}
-.pill.mg{background:#fff0f5;color:#b30043;border-color:#ffc1d5}
-.pill.li{background:#e8f8ef;color:#087b4d;border-color:#b7e8cc}
-.pill.go{background:#fff7e3;color:#795400;border-color:#f5d58a}
-.bar{background:#eee8f0}.bar>span{background:linear-gradient(90deg,#38003c,#e90052)}
-.mc-score,.bd-live{background:linear-gradient(135deg,#38003c,#5b1760);color:#fff;border-color:#e7b5cf}
-.bd-live-top>div,.bd-rank-label,.bd-points,.trk-num,.statbox .v{color:#38003c}
-.bd-live-sub,.bd-live-footer,.bd-breakdown,.bd-player-team,.statbox .l,.tos-team,.tos-stat{color:#727080}
-.bd-podium-card{background:linear-gradient(180deg,#fff,#f8f3fa)}
-.bd-rank-1{background:linear-gradient(180deg,#fff8e4,#fff);border-color:#ffb81c}
-.hype-panel{background:linear-gradient(120deg,#fff0f5,#f5eef8);border-color:#f4c2d3}
-.hype-panel-copy b{color:#c40049}.hype-panel-copy span{color:#727080}
-.warnbox{background:#fff7e3;border-color:#f1d38c;color:#6c4d00}
-.empty{background:#fff;border-color:#e7e1eb;color:#727080}
-.modal{background:#fff;color:#25002b;border:1px solid #e7e1eb;box-shadow:0 18px 55px rgba(35,0,40,.22)}
-.modal-head{background:linear-gradient(110deg,#38003c,#511158);color:#fff}
-.modal-body{background:#fff;color:#25002b}.modal-foot{background:#faf8fb;border-color:#e7e1eb}
-.toast{background:#25002b;color:#fff;border-color:#4d3152}
-.market-directory{background:#faf8fb;border-color:#e7e1eb}
-.market-player-row{background:#fff;color:#25002b;border-color:#e7e1eb}
-.market-player-row:hover,.market-player-row.selected{background:#f5eaf6;border-color:#7b3d80}
-.discord-fab{box-shadow:0 8px 22px rgba(0,0,0,.16)}
-.mobile-dock{display:none}
-button,.btn,.navbtn,.card.clickable,.market-player-row,.trk-chip,.cl-name{touch-action:manipulation}
-button:focus-visible,.btn:focus-visible,.navbtn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid rgba(233,0,82,.38);outline-offset:2px}
-.tblwrap{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
-table{border-collapse:separate;border-spacing:0}
-@media(max-width:760px){
- html{scroll-padding-top:90px}body{font-size:14px}
- .wrap{padding-left:12px;padding-right:12px;padding-bottom:calc(100px + env(safe-area-inset-bottom))}
- .brandbar{min-height:58px;padding:8px 0;gap:8px;flex-wrap:nowrap}
- .brand{flex:1 1 auto;max-width:calc(100% - 108px);font-size:13px;letter-spacing:.15px;gap:7px;white-space:normal}
- .brand #brandName{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;white-space:normal;line-height:1.08}
- .brand-mark,.brand-logo{width:36px;height:36px;flex-basis:36px;border-radius:10px}.brand-mark{font-size:10px}
- .season-chip{font-size:8px;padding:5px 7px;letter-spacing:.5px;flex:0 0 auto;max-width:82px;text-align:center}
- .brandbar>.spacer,.brandbar>.row{display:none}
- #cloudBadge{font-size:8px;padding:5px 7px;letter-spacing:.3px;white-space:nowrap}
- #userChip{font-size:8px;padding:5px 7px;white-space:nowrap}
- nav.nav{display:none;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;padding:8px 0 12px}
- nav.nav.mobile-open{display:grid}
- .navbtn{justify-content:center;min-width:0;min-height:42px;padding:7px 4px;font-size:9px;letter-spacing:.1px;white-space:normal;text-align:center;gap:4px;border-radius:9px}
- .navbtn .emoji{font-size:14px}
- .mobile-dock{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:2px;position:fixed;left:0;right:0;bottom:0;z-index:100;padding:7px 7px calc(7px + env(safe-area-inset-bottom));background:rgba(255,255,255,.97);border-top:1px solid #e4dce8;box-shadow:0 -6px 24px rgba(35,0,40,.10);backdrop-filter:blur(18px)}
- .mobile-dock button{appearance:none;border:0;background:transparent;color:#75677a;min-width:0;min-height:48px;padding:4px 2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border-radius:10px;font:inherit;cursor:pointer}
- .mobile-dock .dock-icon{font-size:19px;line-height:1.15;font-weight:900}
- .mobile-dock small{font-size:9px;line-height:1.2;font-weight:800;letter-spacing:.2px}
- .mobile-dock button.active{background:#f2e8f3;color:#38003c}
- .mobile-dock button.active .dock-icon{color:#e90052}
- .view-head{padding:20px 0 14px;gap:8px;align-items:flex-start}
- .view-head h2{font-size:21px;letter-spacing:0}
- .head-actions{width:100%;margin-left:0;gap:6px}
- .head-actions .btn{flex:1 1 auto;min-height:42px;padding:9px 10px}
- .section-title{font-size:12px;letter-spacing:1.2px;margin:20px 0 10px}
- .grid.g3,.grid.g4{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
- .card,.statbox,.grade-tile{min-width:0}
- .btn,button{min-height:40px}
- input,select,textarea{min-height:43px;font-size:16px!important;max-width:100%}
- .tblwrap{border-radius:10px}table{font-size:11px;min-width:520px}th,td{padding:8px 9px}
- .modal{width:calc(100vw - 18px);max-width:none;max-height:calc(100dvh - 18px);overflow:hidden}
- .modal-body{max-height:calc(100dvh - 145px);overflow:auto;padding:14px}
- .modal-foot{display:flex;flex-wrap:wrap;gap:7px}.modal-foot .btn{flex:1 1 120px;min-height:43px}
- .discord-fab{right:10px;bottom:calc(72px + env(safe-area-inset-bottom));padding:8px 11px;font-size:10px}
- .hype-panel{padding:13px;gap:10px}.hype-panel-action{width:100%;justify-content:space-between}
- .bd-podium{gap:5px}.bd-podium-card{padding:11px 5px 9px}
-}
-@media(max-width:390px){
- .brand{font-size:12px;max-width:calc(100% - 98px)}
- .season-chip{font-size:7px;padding:4px 5px}#cloudBadge{font-size:7px}
- .grid.g3,.grid.g4{grid-template-columns:1fr}.mobile-dock small{font-size:8px}
-}
-@media(min-width:761px){.mobile-dock{display:none!important}}
-
 </style>
 </head>
 <body>
@@ -953,7 +828,7 @@ table{border-collapse:separate;border-spacing:0}
 <header class="top">
   <div class="wrap" style="padding-bottom:0">
     <div class="brandbar">
-      <div class="brand" data-act="goto" data-view="registry"><span class="brand-mark" id="brandFallback" aria-hidden="true">UPL</span><img class="brand-logo" id="leagueLogo" src="./league-logo.png" alt="League logo"><span id="brandName">Unmatched Premier League</span></div>
+      <div class="brand" data-act="goto" data-view="registry"><span class="ball">👑</span> <span id="brandName">Unmatched Premier League</span></div>
       <span class="season-chip" id="seasonChip">2026 Season</span>
       <div class="spacer"></div>
       <div class="row" style="gap:6px;align-items:center" aria-label="Page history">
@@ -968,14 +843,6 @@ table{border-collapse:separate;border-spacing:0}
 </header>
 
 <main class="wrap" id="view"></main>
-
-<nav class="mobile-dock" id="mobileDock" aria-label="Quick navigation">
-  <button type="button" data-act="goto" data-view="registry"><span class="dock-icon">⌂</span><small>Home</small></button>
-  <button type="button" data-act="goto" data-view="matchcenter"><span class="dock-icon">⚡</span><small>Matches</small></button>
-  <button type="button" data-act="goto" data-view="standings"><span class="dock-icon">▤</span><small>Table</small></button>
-  <button type="button" data-act="goto" data-view="players"><span class="dock-icon">♟</span><small>Players</small></button>
-  <button type="button" id="mobileMoreBtn" data-act="mobile:more" aria-expanded="false"><span class="dock-icon">☰</span><small>More</small></button>
-</nav>
 
 <div id="modalRoot"></div>
 <div id="toastRoot"></div>
@@ -1094,19 +961,7 @@ function positionIcon(position){
 }
 
 const $  = s => document.querySelector(s);
-const $ = s => Array.from(document.querySelectorAll(s));
-
-function setupLeagueLogo(){
-  const image = $('#leagueLogo');
-  const fallback = $('#brandFallback');
-  if (!image || !fallback) return;
-  const showImage = () => { image.classList.add('ready'); fallback.hidden = true; };
-  const showFallback = () => { image.classList.remove('ready'); fallback.hidden = false; };
-  image.addEventListener('load', showImage);
-  image.addEventListener('error', showFallback);
-  if (image.complete) image.naturalWidth ? showImage() : showFallback();
-}
-setupLeagueLogo();
+const $$ = s => Array.from(document.querySelectorAll(s));
 const uuid = () => 'x' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function money(n){n=Number(n)||0;const sign=n<0?'-':'';const a=Math.abs(n);if(a>=1e9)return sign+'$'+(a/1e9).toFixed(2)+'B';if(a>=1e6)return sign+'$'+(a/1e6).toFixed(2)+'M';if(a>=1e3)return sign+'$'+(a/1e3).toFixed(0)+'K';return sign+'$'+a.toFixed(0);}
@@ -3445,14 +3300,6 @@ function renderNav(){
     ? `<button class="navbtn ghost" data-act="logout"><span class="emoji">🚪</span>Logout</button>`
     : `<button class="navbtn ghost" data-act="login"><span class="emoji">🔐</span>Admin Login</button>`;
   nav.innerHTML = html;
-  nav.classList.remove('mobile-open');
-  const dockPrimaryViews = ['registry','matchcenter','standings','players'];
-  $('#mobileDock [data-view]').forEach(button => button.classList.toggle('active', button.dataset.view === app.currentView));
-  const moreButton = $('#mobileMoreBtn');
-  if (moreButton) {
-    moreButton.classList.toggle('active', !dockPrimaryViews.includes(app.currentView));
-    moreButton.setAttribute('aria-expanded', 'false');
-  }
   $('#brandName').textContent = app.state.leagueName;
   $('#seasonChip').textContent = app.state.seasonName;
   const chip = $('#userChip');
@@ -3529,10 +3376,6 @@ function restoreRouteFromHash(shouldRender){
 window.addEventListener('popstate', () => restoreRouteFromHash(true));
 
 function go(view){
-  const nav = $('#nav');
-  if (nav) nav.classList.remove('mobile-open');
-  const moreButton = $('#mobileMoreBtn');
-  if (moreButton) moreButton.setAttribute('aria-expanded', 'false');
   app.currentView = view;
   if (view !== 'teamprofile') app._teamViewId = null;
   if (view !== 'tournament') app._tourViewId = null;
@@ -4370,14 +4213,6 @@ document.addEventListener('click', async e => {
   if (act === 'goto'){ go(el.dataset.view); return; }
   if (act === 'history:back'){ window.history.back(); return; }
   if (act === 'history:forward'){ window.history.forward(); return; }
-  if (act === 'mobile:more'){
-    const nav = $('#nav');
-    if (nav){
-      const isOpen = nav.classList.toggle('mobile-open');
-      el.setAttribute('aria-expanded', String(isOpen));
-    }
-    return;
-  }
   if (act === 'modal:close'){ closeModal(); return; }
 
   if (act === 'login'){
