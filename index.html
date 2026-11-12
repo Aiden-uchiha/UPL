@@ -846,6 +846,60 @@ button:active,.btn:active,.navbtn:active,.market-player-row:active,.trk-chip:act
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
 @media(max-width:640px){.brand{font-size:16px}.brandbar{gap:8px}.brand-logo{flex-basis:42px;width:42px;height:42px}.navbtn{padding:8px 13px}.view-head{padding-top:22px}}
 
+/* ===== DARK THEME CONTRAST + TOP THREE MEDALS ===== */
+/* Purple is used for dark surfaces, so don't reuse it for foreground data. */
+#view .cl-name,#modalRoot .cl-name{
+  color:#a7f5f0!important;
+  border-bottom-color:rgba(76,231,239,.28);
+}
+#view .cl-name:hover,#modalRoot .cl-name:hover{
+  color:#ffffff!important;
+  border-bottom-color:#4ce7ef;
+}
+#view [style*="color:var(--pl-purple)"],
+#modalRoot [style*="color:var(--pl-purple)"]{
+  color:#a7f5f0!important;
+}
+
+/* Give podium/leaderboard rows a clear medal identity on dark surfaces. */
+tbody tr.top1,tbody tr.top2,tbody tr.top3{
+  background-size:260% 100%;
+}
+tbody tr.top1{
+  background-image:linear-gradient(100deg,rgba(255,209,102,.22) 0%,rgba(20,29,52,.96) 45%,rgba(255,209,102,.12) 70%)!important;
+  animation:rowShine 7s linear infinite;
+}
+tbody tr.top2{
+  background-image:linear-gradient(100deg,rgba(192,205,225,.2) 0%,rgba(20,29,52,.96) 45%,rgba(192,205,225,.1) 70%)!important;
+  animation:rowShine 8s linear infinite;
+}
+tbody tr.top3{
+  background-image:linear-gradient(100deg,rgba(205,127,75,.22) 0%,rgba(20,29,52,.96) 45%,rgba(205,127,75,.12) 70%)!important;
+  animation:rowShine 9s linear infinite;
+}
+tbody tr.top1 td:first-child{border-left:3px solid #ffd166}
+tbody tr.top2 td:first-child{border-left:3px solid #c0cde1}
+tbody tr.top3 td:first-child{border-left:3px solid #cd7f4b}
+
+/* Gold, silver and bronze animated fills for the top three chart bars. */
+@keyframes rankBarShine{
+  0%{background-position:100% 0;filter:brightness(.94)}
+  50%{background-position:0 0;filter:brightness(1.16)}
+  100%{background-position:100% 0;filter:brightness(.94)}
+}
+.bar.rank-bar-1>span{
+  background:linear-gradient(90deg,#986a13,#e5ad32,#fff0b3,#d69b24,#986a13);
+  background-size:240% 100%;animation:rankBarShine 3.1s ease-in-out infinite;
+}
+.bar.rank-bar-2>span{
+  background:linear-gradient(90deg,#74839a,#b9c6d8,#f2f6fc,#a9b8cd,#74839a);
+  background-size:240% 100%;animation:rankBarShine 3.8s ease-in-out infinite;
+}
+.bar.rank-bar-3>span{
+  background:linear-gradient(90deg,#874a2b,#bd754a,#f0bd91,#ce8758,#874a2b);
+  background-size:240% 100%;animation:rankBarShine 4.4s ease-in-out infinite;
+}
+
 </style>
 </head>
 <body>
@@ -2803,13 +2857,14 @@ VIEWS.standings = () => {
     }).join('')}
     </tbody></table></div>`;
   html += `<div class="section-title">Team Value Chart</div><div class="card anim">`;
-  table.slice().sort((a,b) => b.value - a.value).forEach(t => {
+  table.slice().sort((a,b) => b.value - a.value).forEach((t, i) => {
+    const rankBarClass = i < 3 ? ' rank-bar-' + (i + 1) : '';
     html += `<div style="margin-bottom:10px">
       <div class="between tiny" style="margin-bottom:4px">
         <span>${teamLink(teamById(t.id), 20)}</span>
         <b class="mono" style="color:var(--pl-purple)">${money(t.value)}</b>
       </div>
-      <div class="bar"><span style="width:${Math.max(2, (t.value / maxVal) * 100)}%"></span></div>
+      <div class="bar${rankBarClass}"><span style="width:${Math.max(2, (t.value / maxVal) * 100)}%"></span></div>
     </div>`;
   });
   html += `</div>`;
@@ -5732,7 +5787,7 @@ function openAwardRanking(key){
             : (teamById(r.id) && app.state.teams.some(t => t.id === r.id) ? teamLink(teamById(r.id), 20) : esc(r.label)))}
           ${r.sub ? `<div class="tiny muted">${esc(r.sub)}</div>` : ''}</td>
         <td class="num" style="color:var(--pl-purple);font-weight:900">${r.fmt ? r.fmt(r.value) : num(r.value)}</td>
-        <td><div class="bar" style="height:12px"><span style="width:${Math.max(2,(Math.abs(r.value)/maxV)*100)}%"></span></div></td>
+        <td><div class="bar${i < 3 ? ' rank-bar-' + (i + 1) : ''}" style="height:12px"><span style="width:${Math.max(2,(Math.abs(r.value)/maxV)*100)}%"></span></div></td>
       </tr>`).join('')}</tbody>
     </table></div>`;
   }
