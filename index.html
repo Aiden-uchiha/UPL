@@ -936,6 +936,13 @@ function setCloudBadge(text, on){
 function hasPendingCloudSave(){
   try { return !!localStorage.getItem(LS_PENDING_CLOUD_SAVE); } catch(e){ return !!app._pendingCloudSave; }
 }
+function stableSerialize(value){
+  if (Array.isArray(value)) return '[' + value.map(stableSerialize).join(',') + ']';
+  if (value && typeof value === 'object') {
+    return '{' + Object.keys(value).sort().map(key => JSON.stringify(key) + ':' + stableSerialize(value[key])).join(',') + '}';
+  }
+  return JSON.stringify(value);
+}
 function clearPendingCloudSave(){
   app._pendingCloudSave = false;
   try { localStorage.removeItem(LS_PENDING_CLOUD_SAVE); } catch(e){}
@@ -1305,9 +1312,7 @@ async function saveState(opts){
     const expectedRevision = Number(app._cloudRevision) || 0;
     const nextRevision = await firebaseApi.runTransaction(dbClient, async transaction => {
       const stateRef = leagueStateRef();
-      const logsRef = adminLogsRef();
       const stateSnap = await transaction.get(stateRef);
-      const logsSnap = await transaction.get(logsRef);
       const actualRevision = stateSnap.exists() ? (Number(stateSnap.data().revision) || 0) : 0;
       if (actualRevision !== expectedRevision) {
         const conflict = new Error('CLOUD_CONFLICT');
@@ -1318,14 +1323,19 @@ async function saveState(opts){
       transaction.set(stateRef, {
         state: publicState, updatedAt, updatedBy: 'Admin', revision
       }, { merge: true });
-      transaction.set(logsRef, {
-        logs: (app.state.logs || []).slice(-500), updatedAt
-      }, { merge: true });
       return revision;
     });
     app._cloudRevision = nextRevision;
     clearPendingCloudSave();
     setCloudBadge('☁️ FIRESTORE SYNCED', true);
+    try {
+      await firebaseApi.setDoc(adminLogsRef(), {
+        logs: (app.state.logs || []).slice(-500), updatedAt
+      }, { merge: true });
+    } catch(logError) {
+      console.warn('League data synced, but admin activity logs could not be saved:', logError);
+      toast('League data is saved to Firestore, but the admin activity log did not sync. Check its Firestore write rule.', 'err');
+    }
     return true;
   } catch(e) {
     console.error('Firestore save failed:', e);
@@ -1352,7 +1362,7 @@ async function loadCloudState(){
       if (data && data.state) {
         if (hasPendingCloudSave()) {
           const localPublic = Object.assign({}, app.state, { logs: [] });
-          if (JSON.stringify(localPublic) === JSON.stringify(data.state)) {
+          if (stableSerialize(localPublic) === stableSerialize(data.state)) {
             clearPendingCloudSave();
           } else {
             app._pendingCloudSave = true;
@@ -4151,16 +4161,20 @@ document.addEventListener('click', async e => {
 
   if (act === 'login'){
     openModal('🔐 Admin Login', `
-      <div class="warnbox">Sign in with the password for the administrator account configured in Firebase. Readers can use anonymous Hype voting without providing names or email addresses.</div>
-      <label class="fl">Admin password</label>
-      <input id="localPass" type="password" autocomplete="current-password" placeholder="Enter admin password" autofocus>
+      <div class="warnbox">Sign in with your administrator email and password. Only the configured admin account is authorized. Readers can use anonymous Hype voting without providing names or email addresses.</div>
+      <label class="fl" for="localEmail">Admin email</label>
+      <input id="localEmail" type="email" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="Enter admin email" required autofocus>
+      <label class="fl" for="localPass" style="margin-top:12px">Admin password</label>
+      <input id="localPass" type="password" autocomplete="current-password" placeholder="Enter admin password" required>
       ${!dbClient ? '<div class="hint" style="margin-top:8px;color:#b45309">Firebase is not configured yet. Paste your Firebase Web App config into FIREBASE_CONFIG near the top of this file.</div>' : ''}
     `, `<button class="btn lime" data-act="login:local">Sign in</button><button class="btn" data-act="modal:close">Cancel</button>`);
     return;
   }
   if (act === 'login:local'){
-    const email = ADMIN_EMAILS[0]; // Internal Firebase sign-in identity; never displayed to readers.
+    const email = ($('#localEmail')?.value || '').trim().toLowerCase();
     const password = $('#localPass')?.value || '';
+    if (!email) return toast('Enter your admin email.', 'err');
+    if (!ADMIN_EMAILS.includes(email)) return toast('This email is not authorized to administer the league.', 'err');
     if (!password) return toast('Enter your admin password.', 'err');
     if (!dbClient || !authClient) return toast('Firebase is not configured. Add your Firebase Web App config first.', 'err');
     try {
