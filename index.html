@@ -82,6 +82,31 @@ header.top{
   color:#ffffff;cursor:pointer;user-select:none;white-space:nowrap;
   display:flex;align-items:center;gap:8px;
 }
+.brand-logo{
+  position:relative;display:inline-flex;align-items:center;justify-content:center;
+  flex:0 0 48px;width:48px;height:48px;border-radius:50%;overflow:visible;
+  border:2px solid rgba(255,184,28,.78);background:rgba(255,255,255,.1);
+  color:#ffb81c;font-size:22px;line-height:1;box-shadow:0 0 0 3px rgba(255,184,28,.1);
+  animation:plLogoPulse 2.6s ease-in-out infinite;
+}
+.brand-logo img{
+  display:block;width:100%;height:100%;border-radius:50%;object-fit:contain;
+  background:rgba(255,255,255,.96);
+}
+.brand-logo.editable{cursor:pointer}
+.brand-logo.editable::after{
+  content:'✎';position:absolute;right:-4px;bottom:-4px;width:19px;height:19px;
+  display:flex;align-items:center;justify-content:center;border:1px solid #fff;
+  border-radius:50%;background:#ffb81c;color:#38003c;font-size:12px;font-weight:900;
+  opacity:0;transform:scale(.8);transition:opacity .16s ease,transform .16s ease;
+}
+.brand-logo.editable:hover::after,.brand-logo.editable:focus-visible::after{
+  opacity:1;transform:scale(1);
+}
+@keyframes plLogoPulse{
+  0%,100%{box-shadow:0 0 0 3px rgba(255,184,28,.1),0 0 12px rgba(255,184,28,.12)}
+  50%{box-shadow:0 0 0 6px rgba(255,184,28,.18),0 0 20px rgba(255,184,28,.22)}
+}
 .brand .ball{
   display:inline-block;animation:spinball 8s linear infinite;
   color:#ffd43b !important;-webkit-text-fill-color:#ffd43b !important;
@@ -819,7 +844,7 @@ button:active,.btn:active,.navbtn:active,.market-player-row:active,.trk-chip:act
 .card::after,.match-card::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 25%,rgba(255,255,255,.045) 48%,transparent 68%);transform:translateX(-130%);transition:transform .7s}
 .card:hover::after,.match-card:hover::after{transform:translateX(130%)}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
-@media(max-width:640px){.brand{font-size:16px}.brandbar{gap:8px}.navbtn{padding:8px 13px}.view-head{padding-top:22px}}
+@media(max-width:640px){.brand{font-size:16px}.brandbar{gap:8px}.brand-logo{flex-basis:42px;width:42px;height:42px}.navbtn{padding:8px 13px}.view-head{padding-top:22px}}
 
 </style>
 </head>
@@ -828,7 +853,7 @@ button:active,.btn:active,.navbtn:active,.market-player-row:active,.trk-chip:act
 <header class="top">
   <div class="wrap" style="padding-bottom:0">
     <div class="brandbar">
-      <div class="brand" data-act="goto" data-view="registry"><span class="ball">👑</span> <span id="brandName">Unmatched Premier League</span></div>
+      <div class="brand" data-act="goto" data-view="registry"><div class="brand-logo" id="brandLogo" data-act="logo:edit" title="League logo">👑</div> <span id="brandName">Unmatched Premier League</span></div>
       <span class="season-chip" id="seasonChip">2026 Season</span>
       <div class="spacer"></div>
       <div class="row" style="gap:6px;align-items:center" aria-label="Page history">
@@ -969,6 +994,11 @@ const num = n => (Number(n)||0).toLocaleString('en-US');
 const pct = (a,b) => b ? ((a/b)*100).toFixed(1) + '%' : '0%';
 const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
 function isImageUrl(v){return typeof v==='string'&&(/^https?:\/\//i.test(v)||v.startsWith('data:image')||v.startsWith('blob:'));}
+function renderLeagueLogo(){
+  const logo = String((app.state && app.state.leagueLogo) || '').trim();
+  if (logo && isImageUrl(logo)) return `<img src="${esc(logo)}" alt="League logo" loading="lazy" referrerpolicy="no-referrer">`;
+  return esc(logo || '👑');
+}
 
 function teamLogo(team, size){
   size = Number(size) || 26;
@@ -1065,6 +1095,7 @@ function awardEmoji(key, fallback){
 function defaultState(){
   return {
     leagueName: 'Unmatched Premier League',
+    leagueLogo: '',
     seasonName: '2026 Season',
     hypeCycleId: uuid(),
     teams: [], players: [], matches: [], fixtures: [], tournaments: [], archives: [], logs: [],
@@ -3300,6 +3331,10 @@ function renderNav(){
     ? `<button class="navbtn ghost" data-act="logout"><span class="emoji">🚪</span>Logout</button>`
     : `<button class="navbtn ghost" data-act="login"><span class="emoji">🔐</span>Admin Login</button>`;
   nav.innerHTML = html;
+  const brandLogo = $('#brandLogo');
+  brandLogo.innerHTML = renderLeagueLogo();
+  brandLogo.classList.toggle('editable', !!app.isAdmin);
+  brandLogo.title = app.isAdmin ? 'Change league logo' : 'League logo';
   $('#brandName').textContent = app.state.leagueName;
   $('#seasonChip').textContent = app.state.seasonName;
   const chip = $('#userChip');
@@ -4214,6 +4249,58 @@ document.addEventListener('click', async e => {
   if (act === 'history:back'){ window.history.back(); return; }
   if (act === 'history:forward'){ window.history.forward(); return; }
   if (act === 'modal:close'){ closeModal(); return; }
+
+  if (act === 'logo:edit'){
+    if (!app.isAdmin) return;
+    const current = String(app.state.leagueLogo || '').trim();
+    const currentIsUrl = !!(current && isImageUrl(current));
+    openModal('🏆 League Logo', `
+      <div class="center" style="margin-bottom:14px">
+        <div class="brand-logo" style="margin:0 auto">${renderLeagueLogo()}</div>
+        <div class="hint" style="margin-top:8px">Choose an image URL or an emoji for the league badge.</div>
+      </div>
+      <label class="fl" for="leagueLogoUrl">Image URL</label>
+      <input id="leagueLogoUrl" type="url" inputmode="url" autocomplete="url"
+        placeholder="https://example.com/league-logo.png"
+        value="${currentIsUrl ? esc(current) : ''}">
+      <label class="fl" for="leagueLogoEmoji">Emoji</label>
+      <input id="leagueLogoEmoji" type="text" maxlength="8" autocomplete="off"
+        placeholder="👑" value="${current && !currentIsUrl ? esc(current) : ''}">
+      <div class="hint" style="margin-top:8px">An image URL takes priority over an emoji. Leave both empty to use the default crown.</div>
+    `, `
+      <button class="btn danger" data-act="logo:remove">Remove</button>
+      <button class="btn" data-act="modal:close">Cancel</button>
+      <button class="btn lime" data-act="logo:save">Save Logo</button>
+    `);
+    return;
+  }
+  if (act === 'logo:save'){
+    if (!app.isAdmin) return;
+    const url = ($('#leagueLogoUrl')?.value || '').trim();
+    const emoji = ($('#leagueLogoEmoji')?.value || '').trim().slice(0, 8);
+    let final = '';
+    if (url){
+      if (!isImageUrl(url) || !/^https?:\/\//i.test(url)) return toast('Enter a valid http or https image URL.', 'err');
+      final = url;
+    } else if (emoji) final = emoji;
+    app.state.leagueLogo = final;
+    logAdmin('Updated league logo');
+    await saveState();
+    closeModal();
+    render();
+    toast(final ? '✅ League logo updated.' : '✅ Default crown restored.', 'ok');
+    return;
+  }
+  if (act === 'logo:remove'){
+    if (!app.isAdmin) return;
+    app.state.leagueLogo = '';
+    logAdmin('Removed league logo');
+    await saveState();
+    closeModal();
+    render();
+    toast('✅ Default crown restored.', 'ok');
+    return;
+  }
 
   if (act === 'login'){
     openModal('🔐 Admin Login', `
