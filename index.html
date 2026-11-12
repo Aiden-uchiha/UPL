@@ -4172,7 +4172,7 @@ document.addEventListener('click', async e => {
       app.isAdmin = true; app.user = { uid: user.uid };
       loadHypedPlayerIds();
       const foundCloudData = await loadCloudState();
-      if (!foundCloudData) await saveState();
+      if (!foundCloudData && !hasPendingCloudSave()) await saveState();
       closeModal(); render(); toast('🔓 Admin signed in. Firebase database connected.', 'ok');
     } catch(err) {
       const code = String(err && err.code || '');
