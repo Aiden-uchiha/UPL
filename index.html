@@ -931,7 +931,7 @@ function isAuthorizedAdminUser(user){
 }
 function setCloudBadge(text, on){
   const badge = $('#cloudBadge');
-  if (badge){ badge.textContent = text; badge.className = 'cloud-badge ' + (on ? 'on' : 'off'); badge.title = text; }
+  if (badge){ badge.textContent = text; badge.className = 'cloud-badge ' + (on ? 'on' : 'off'); badge.title = app._pendingCloudSave ? 'Unsaved local changes. Click to retry cloud save.' : text; badge.style.cursor = app._pendingCloudSave ? 'pointer' : 'default'; }
 }
 function hasPendingCloudSave(){
   try { return !!localStorage.getItem(LS_PENDING_CLOUD_SAVE); } catch(e){ return !!app._pendingCloudSave; }
@@ -5697,6 +5697,10 @@ async function archiveSeason(){
   }
 })();
 window.addEventListener('beforeunload', stopCloudListeners, { once: true });
+$('#cloudBadge').addEventListener('click', () => {
+  if (app._pendingCloudSave && app.isAdmin) saveState();
+  else if (app._pendingCloudSave) toast('Sign in as admin to retry the pending cloud save.', 'err');
+});
 </script>
 </body>
 </html>
