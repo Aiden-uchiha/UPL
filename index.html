@@ -821,6 +821,12 @@ button:active,.btn:active,.navbtn:active,.market-player-row:active,.trk-chip:act
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
 @media(max-width:640px){.brand{font-size:16px}.brandbar{gap:8px}.navbtn{padding:8px 13px}.view-head{padding-top:22px}}
 
+.brand-logo{display:none;width:34px;height:34px;flex:0 0 34px;object-fit:contain;border-radius:8px;background:#fff;padding:2px;vertical-align:middle}
+.brand-logo.ready{display:inline-block}
+#brandFallback{display:inline-block}
+@media(max-width:640px){.brand-logo{width:30px;height:30px;flex-basis:30px}}
+.player-link{color:#c02670!important;font-weight:800!important}
+.player-link:hover{color:#8f174f!important;border-bottom-color:#c02670!important}
 </style>
 </head>
 <body>
@@ -828,7 +834,7 @@ button:active,.btn:active,.navbtn:active,.market-player-row:active,.trk-chip:act
 <header class="top">
   <div class="wrap" style="padding-bottom:0">
     <div class="brandbar">
-      <div class="brand" data-act="goto" data-view="registry"><span class="ball">👑</span> <span id="brandName">Unmatched Premier League</span></div>
+      <div class="brand" data-act="goto" data-view="registry"><img class="brand-logo" id="leagueLogo" src="https://media.discordapp.net/attachments/1567495079474634862/1570336941776441366/13D47DAF-CE8A-45A4-B726-C71415063265.png?ex=6af6b9be&amp;is=6af5683e&amp;hm=0a9ab7ecd0099002039b2d7ae7539f11f37e11bfbd640be8143ed663f29607e2&amp;=&amp;format=webp&amp;quality=lossless&amp;width=768&amp;height=768" alt="UPL league crest"><span class="ball" id="brandFallback">👑</span><span id="brandName">Unmatched Premier League</span></div>
       <span class="season-chip" id="seasonChip">2026 Season</span>
       <div class="spacer"></div>
       <div class="row" style="gap:6px;align-items:center" aria-label="Page history">
@@ -961,7 +967,18 @@ function positionIcon(position){
 }
 
 const $  = s => document.querySelector(s);
-const $$ = s => Array.from(document.querySelectorAll(s));
+const $ = s => Array.from(document.querySelectorAll(s));
+
+(function initLeagueCrest(){
+  const image = $('#leagueLogo');
+  const fallback = $('#brandFallback');
+  if (!image || !fallback) return;
+  const showImage = () => { image.classList.add('ready'); fallback.style.display = 'none'; };
+  const showFallback = () => { image.classList.remove('ready'); fallback.style.display = 'inline-block'; };
+  image.addEventListener('load', showImage);
+  image.addEventListener('error', showFallback);
+  if (image.complete) image.naturalWidth ? showImage() : showFallback();
+})();
 const uuid = () => 'x' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function money(n){n=Number(n)||0;const sign=n<0?'-':'';const a=Math.abs(n);if(a>=1e9)return sign+'$'+(a/1e9).toFixed(2)+'B';if(a>=1e6)return sign+'$'+(a/1e6).toFixed(2)+'M';if(a>=1e3)return sign+'$'+(a/1e3).toFixed(0)+'K';return sign+'$'+a.toFixed(0);}
@@ -993,7 +1010,7 @@ function teamTag(team, size){ if (!team) return ''; return `<span class="itag">$
 
 function playerLink(p, color){
   if (!p) return '';
-  return `<span class="cl-name" style="font-weight:700${color ? ';color:' + esc(color) : ''}" data-act="player:view" data-id="${esc(p.id)}" title="Open ${esc(p.name)}">${esc(p.name)}</span>`;
+  return `<span class="cl-name player-link" style="font-weight:800;color:#c02670" data-act="player:view" data-id="${esc(p.id)}" title="Open ${esc(p.name)}">${esc(p.name)}</span>`;
 }
 
 function teamSide(team, size, right){
@@ -4272,12 +4289,23 @@ document.addEventListener('click', async e => {
   if (act === 'team:add'){
     if (!app.isAdmin) return;
     openModal('➕ New Team', teamFormHTML(null),
-      `<button class="btn lime" data-act="team:save">Save</button><button class="btn" data-act="modal:close">Cancel</button>`);
+      `<button class="btn lime" data-act="team:save">Add Team</button><button class="btn" data-act="modal:close">Cancel</button>`);
     return;
   }
   if (act === 'team:save'){
-    const name = $('#f_teamName').value.trim();
-    if (!name) return toast('⚠️ Name required', 'err');
+    if (!app.isAdmin) return;
+    if (app._teamSaveBusy) return toast('⏳ Team is already being added. Please wait.', 'err');
+    app._teamSaveBusy = true;
+    const name = ($('#f_teamName')?.value || '').trim();
+    if (!name){
+      app._teamSaveBusy = false;
+      return toast('⚠️ Name required', 'err');
+    }
+    const duplicate = app.state.teams.find(team => String(team.name || '').trim().toLowerCase() === name.toLowerCase());
+    if (duplicate){
+      app._teamSaveBusy = false;
+      return toast('⚠️ A team with that name already exists.', 'err');
+    }
     const t = {
       id: uuid(), name,
       color: $('#f_teamColor').value,
@@ -4286,9 +4314,17 @@ document.addEventListener('click', async e => {
       stats: {}
     };
     app.state.teams.push(t);
-    await logAdmin('Created team "' + name + '"');
-    await saveState(); closeModal(); render();
-    toast('✅ Team created', 'ok');
+    logAdmin('Created team "' + name + '"');
+    // saveState writes the local backup before its first cloud await.
+    const cloudSave = saveState();
+    closeModal();
+    render();
+    toast('✅ ' + esc(name) + ' added. Syncing league data…', 'ok');
+    app._teamSaveBusy = false;
+    cloudSave.catch(error => {
+      console.error('Team cloud save failed:', error);
+      toast('Team was added locally. Cloud sync needs attention.', 'err');
+    });
     return;
   }
   if (act === 'team:edit'){
